@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FA088857-7C5B-4FC2-B202-7496E1BBF9D7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Lisp</RootNamespace>
+    <AssemblyName>Lisp</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class\Compiler.cs" />
+    <Compile Include="Class\Constants.cs" />
+    <Compile Include="Class\Environment.cs" />
+    <Compile Include="Class\Evaluator.cs" />
+    <Compile Include="Class\Keyword.cs" />
+    <Compile Include="Class\Lambda.cs" />
+    <Compile Include="Class\List.cs" />
+    <Compile Include="Class\Reader.cs" />
+    <Compile Include="Class\StringTextReader.cs" />
+    <Compile Include="Class\Symbol.cs" />
+    <Compile Include="Class\TopEnvironment.cs" />
+    <Compile Include="Class\Value.cs" />
+    <Compile Include="Class\Writer.cs" />
+    <Compile Include="Exception\LispException.cs" />
+    <Compile Include="Interface\IAtom.cs" />
+    <Compile Include="Interface\IEnvironment.cs" />
+    <Compile Include="Interface\IKeyword.cs" />
+    <Compile Include="Interface\ILambda.cs" />
+    <Compile Include="Interface\IMap.cs" />
+    <Compile Include="Interface\IMapEntry.cs" />
+    <Compile Include="Interface\IMetaData.cs" />
+    <Compile Include="Interface\INamed.cs" />
+    <Compile Include="Interface\ITextReader.cs" />
+    <Compile Include="Interface\IList.cs" />
+    <Compile Include="Interface\ISExpression.cs" />
+    <Compile Include="Interface\ISymbol.cs" />
+    <Compile Include="Interface\ICollection.cs" />
+    <Compile Include="Interface\ITopEnvironment.cs" />
+    <Compile Include="Interface\IValue.cs" />
+    <Compile Include="Interface\IVector.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
