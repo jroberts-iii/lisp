@@ -1,6 +1,6 @@
 ﻿namespace Lisp.Interface
 {
-    public interface IMapEntry : IAtom
+    public interface IMapEntry : IValue
     {
         ISExpression Key { get; }
         ISExpression Value { get; }

@@ -34,28 +34,37 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class\Compiler.cs" />
+    <Compile Include="Class\Boolean.cs" />
     <Compile Include="Class\Constants.cs" />
+    <Compile Include="Class\Double.cs" />
     <Compile Include="Class\Environment.cs" />
     <Compile Include="Class\Evaluator.cs" />
+    <Compile Include="Class\Integer.cs" />
     <Compile Include="Class\Keyword.cs" />
-    <Compile Include="Class\Lambda.cs" />
+    <Compile Include="Class\Macro.cs" />
+    <Compile Include="Class\Closure.cs" />
     <Compile Include="Class\List.cs" />
     <Compile Include="Class\Reader.cs" />
+    <Compile Include="Class\String.cs" />
     <Compile Include="Class\StringTextReader.cs" />
     <Compile Include="Class\Symbol.cs" />
     <Compile Include="Class\TopEnvironment.cs" />
-    <Compile Include="Class\Value.cs" />
     <Compile Include="Class\Writer.cs" />
     <Compile Include="Exception\LispException.cs" />
     <Compile Include="Interface\IAtom.cs" />
+    <Compile Include="Interface\IBoolean.cs" />
+    <Compile Include="Interface\IDouble.cs" />
     <Compile Include="Interface\IEnvironment.cs" />
+    <Compile Include="Interface\IInteger.cs" />
     <Compile Include="Interface\IKeyword.cs" />
-    <Compile Include="Interface\ILambda.cs" />
+    <Compile Include="Interface\IMacro.cs" />
+    <Compile Include="Interface\IClosure.cs" />
     <Compile Include="Interface\IMap.cs" />
     <Compile Include="Interface\IMapEntry.cs" />
     <Compile Include="Interface\IMetaData.cs" />
     <Compile Include="Interface\INamed.cs" />
+    <Compile Include="Interface\ILambda.cs" />
+    <Compile Include="Interface\IString.cs" />
     <Compile Include="Interface\ITextReader.cs" />
     <Compile Include="Interface\IList.cs" />
     <Compile Include="Interface\ISExpression.cs" />
@@ -66,7 +75,9 @@
     <Compile Include="Interface\IVector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="InterfaceDiagram.cd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

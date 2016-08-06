@@ -4,8 +4,7 @@ namespace Lisp.Interface
 {
     public interface ILambda : IAtom
     {
-        IList Body { get; }
-        IEnvironment ClosurEnvironment { get; }
+        ISExpression Body { get; }
         IEnumerable<ISymbol> ParameterSymbols { get; }
     }
 }

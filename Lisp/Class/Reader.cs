@@ -16,9 +16,9 @@ namespace Lisp.Class
                 {'\0', EndReader},
                 {'(', ListReader},
                 {')', ListTerminatorReader},
+                {'`', QuasiquoteReader},
                 {'\'', QuoteReader},
                 {'"', StringReader},
-                {'`', SyntaxQuoteReader},
                 {'~', UnquoteReader}
             };
 
@@ -81,12 +81,12 @@ namespace Lisp.Class
                     double doubleValue;
                     if (double.TryParse(value, NumberStyles.Integer, NumberFormatInfo.CurrentInfo, out doubleValue))
                     {
-                        return new Value((int) doubleValue);
+                        return new Integer((int) doubleValue);
                     }
 
                     if (double.TryParse(value, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out doubleValue))
                     {
-                        return new Value(doubleValue);
+                        return new Double(doubleValue);
                     }
 
                     var name = stringBuilder.ToString();
@@ -156,6 +156,14 @@ namespace Lisp.Class
         private static ISExpression ListTerminatorReader(ITextReader textReader)
         {
             throw new LispException("Missing terminating ')'.");
+        }
+
+        private static ISExpression QuasiquoteReader(ITextReader textReader)
+        {
+            var nextChar = textReader.Read();
+            Trace.Assert(nextChar == '`');
+
+            return Constants.EmptyList.Cons(Read(textReader)).Cons(Constants.Quasiquote);
         }
 
         private static ISExpression QuoteReader(ITextReader textReader)
@@ -228,15 +236,7 @@ namespace Lisp.Class
                 nextChar = textReader.Read();
             }
 
-            return new Value(stringBuilder.ToString());
-        }
-
-        private static ISExpression SyntaxQuoteReader(ITextReader textReader)
-        {
-            var nextChar = textReader.Read();
-            Trace.Assert(nextChar == '`');
-
-            return Constants.EmptyList.Cons(Read(textReader)).Cons(new Value("`"));
+            return new String(stringBuilder.ToString());
         }
 
         private static ISExpression UnquoteReader(ITextReader textReader)
@@ -244,7 +244,13 @@ namespace Lisp.Class
             var nextChar = textReader.Read();
             Trace.Assert(nextChar == '~');
 
-            return Constants.EmptyList.Cons(Read(textReader)).Cons(new Value("~"));
+            if (textReader.Peek() != '@')
+            {
+                return Constants.EmptyList.Cons(Read(textReader)).Cons(Constants.Unquote);
+            }
+
+            textReader.Read();
+            return Constants.EmptyList.Cons(Read(textReader)).Cons(Constants.UnquoteSplicing);
         }
 
         private delegate ISExpression SExpressionReader(ITextReader textReader);

@@ -209,9 +209,9 @@ namespace Test.Lisp.Class
             }
         }
 
-        private static ISExpression Read(string expression)
+        private static ISExpression Read(string text)
         {
-            return Reader.Read(new StringTextReader(expression));
+            return Reader.Read(new StringTextReader(text));
         }
 
         private static string Write(ISExpression sExpression)

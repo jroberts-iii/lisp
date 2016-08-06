@@ -249,8 +249,7 @@ namespace Test.Lisp.Class
         private static void Check(string input, string output, IEnvironment environment)
         {
             var sExpression = Read(input);
-            var compiled = Compiler.Compile(sExpression, environment);
-            var evaluated = Evaluator.Evaluate(compiled, environment);
+            var evaluated = Evaluator.Evaluate(sExpression, environment);
             var result = Write(evaluated);
             if (result != output)
             {
@@ -262,9 +261,9 @@ namespace Test.Lisp.Class
             }
         }
 
-        private static ISExpression Read(string expression)
+        private static ISExpression Read(string text)
         {
-            return Reader.Read(new StringTextReader(expression));
+            return Reader.Read(new StringTextReader(text));
         }
 
         private static string Write(ISExpression sExpression)

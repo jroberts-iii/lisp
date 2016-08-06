@@ -1,6 +1,6 @@
 ﻿namespace Lisp.Interface
 {
-    public interface IKeyword : INamed
+    public interface IMacro : ILambda
     {
     }
 }

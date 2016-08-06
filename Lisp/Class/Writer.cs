@@ -13,6 +13,27 @@ namespace Lisp.Class
                 return;
             }
 
+            var booleanValue = sExpression as IBoolean;
+            if (booleanValue != null)
+            {
+                textWriter.Write(booleanValue.Value ? "true" : "false");
+                return;
+            }
+
+            var doubleValue = sExpression as IDouble;
+            if (doubleValue != null)
+            {
+                textWriter.Write(doubleValue.Value);
+                return;
+            }
+
+            var integerValue = sExpression as IInteger;
+            if (integerValue != null)
+            {
+                textWriter.Write(integerValue.Value);
+                return;
+            }
+
             var keyword = sExpression as Keyword;
             if (keyword != null)
             {
@@ -21,33 +42,19 @@ namespace Lisp.Class
                 return;
             }
 
+            var stringValue = sExpression as IString;
+            if (stringValue != null)
+            {
+                textWriter.Write("\"");
+                textWriter.Write(stringValue.Value);
+                textWriter.Write("\"");
+                return;
+            }
+
             var symbol = sExpression as Symbol;
             if (symbol != null)
             {
                 textWriter.Write(symbol.Name);
-                return;
-            }
-
-            var value = sExpression as IValue;
-            if (value != null)
-            {
-                var boolValue = value.Val as bool?;
-                if (boolValue != null)
-                {
-                    textWriter.Write(boolValue.Value ? "true" : "false");
-                    return;
-                }
-
-                var stringValue = value.Val as string;
-                if (stringValue != null)
-                {
-                    textWriter.Write("\"");
-                    textWriter.Write(stringValue);
-                    textWriter.Write("\"");
-                    return;
-                }
-
-                textWriter.Write(value.Val.ToString());
                 return;
             }
 
@@ -70,10 +77,17 @@ namespace Lisp.Class
                 return;
             }
 
-            var lambda = sExpression as ILambda;
-            if (lambda != null)
+            var closure = sExpression as IClosure;
+            if (closure != null)
             {
                 textWriter.Write("<lambda>");
+                return;
+            }
+
+            var macro = sExpression as IMacro;
+            if (macro != null)
+            {
+                textWriter.Write("<macro>");
                 return;
             }
 
