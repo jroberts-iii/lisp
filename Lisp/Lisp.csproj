@@ -62,7 +62,7 @@
     <Compile Include="Interface\IMap.cs" />
     <Compile Include="Interface\IMapEntry.cs" />
     <Compile Include="Interface\IMetaData.cs" />
-    <Compile Include="Interface\INamed.cs" />
+    <Compile Include="Interface\IName.cs" />
     <Compile Include="Interface\ILambda.cs" />
     <Compile Include="Interface\IString.cs" />
     <Compile Include="Interface\ITextReader.cs" />

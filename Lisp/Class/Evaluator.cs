@@ -9,10 +9,6 @@ namespace Lisp.Class
         private static readonly Dictionary<string, ListEvaluator> NameToListEvaluator =
             new Dictionary<string, ListEvaluator>
             {
-                {"+", AdditionListEvaluator},
-                {"/", DivisionListEvaluator},
-                {"*", MultiplicationListEvaluator},
-                {"-", SubtractionListEvaluator},
                 {"cond", CondListEvaluator},
                 {"cons", ConsListEvaluator},
                 {"define", DefineListEvaluator},
@@ -50,91 +46,58 @@ namespace Lisp.Class
             throw new LispException($"Undefined symbol {symbol.Name}.");
         }
 
-        private static ISExpression AdditionListEvaluator(IList list, IEnvironment environment)
-        {
-            if (list.Rest.IsEmpty)
-            {
-                return null;
-            }
-
-            IValue total = null;
-            list = list.Rest;
-            while (!list.IsEmpty)
-            {
-                var sExpression = Evaluate(list.First, environment);
-                var value = sExpression as IValue;
-                if (value == null)
-                {
-                    continue;
-                }
-
-                list = list.Rest;
-                total = total == null ? value : total.Addition(value);
-            }
-
-            return total;
-        }
-
         private static ISExpression CallListEvaluator(IList list, IEnvironment environment)
         {
-            Environment env;
-            IList parameters;
-
             if (list.IsEmpty)
             {
                 return Constants.EmptyList;
             }
 
-            var specialSymbol = list.First as ISymbol;
-            if (specialSymbol != null)
+            var sExpression = list.First;
+            if (sExpression is IList)
+            {
+                sExpression = Evaluate(sExpression, environment);
+            }
+
+            var symbol = sExpression as ISymbol;
+            if (symbol != null)
             {
                 ListEvaluator listEvaluator;
-                if (NameToListEvaluator.TryGetValue(specialSymbol.Name, out listEvaluator))
+                if (NameToListEvaluator.TryGetValue(symbol.Name, out listEvaluator))
                 {
                     return listEvaluator(list, environment);
                 }
-            }
 
-            var sExpression = Evaluate(list.First, environment);
-
-            var lambda = sExpression as IClosure;
-            if (lambda != null)
-            {
-                env = new Environment(lambda.ClosureEnvironment);
-
-                parameters = list.Rest;
-                foreach (var parameterSymbol in lambda.ParameterSymbols)
-                {
-                    sExpression = Evaluate(parameters.First, environment);
-                    env.AddSymbol(parameterSymbol.Name, sExpression);
-                    parameters = parameters.Rest;
-                }
-
-                return Evaluate(lambda.Body, env);
+                environment.TryGetSymbol(symbol.Name, out sExpression);
             }
 
             var macro = sExpression as IMacro;
-            if (macro == null)
+            if (macro != null)
             {
-                throw new LispException("Expected (<lambda/macro> parameters)");
+                return MacroEvaluator(macro, list.Rest, environment);
             }
 
-            while (macro != null)
+            var closure = sExpression as IClosure;
+            if (closure != null)
             {
-                env = new Environment();
-
-                parameters = list.Rest;
-                foreach (var parameterSymbol in macro.ParameterSymbols)
-                {
-                    env.AddSymbol(parameterSymbol.Name, parameters.First);
-                    parameters = parameters.Rest;
-                }
-
-                sExpression = Evaluate(macro.Body, env);
-                macro = sExpression as IMacro;
+                return ClosureEvaluator(closure, list.Rest, environment);
             }
 
-            return Evaluate(sExpression, environment);
+            throw new LispException("Expected (<closure/macro> parameters)");
+        }
+
+        private static ISExpression ClosureEvaluator(IClosure closure, IList parameterList, IEnvironment environment)
+        {
+            var env = new Environment(closure.ClosureEnvironment);
+
+            foreach (var parameterSymbol in closure.ParameterSymbols)
+            {
+                var sExpression = Evaluate(parameterList.First, environment);
+                env.AddSymbol(parameterSymbol.Name, sExpression);
+                parameterList = parameterList.Rest;
+            }
+
+            return Evaluate(closure.Body, env);
         }
 
         private static ISExpression CondListEvaluator(IList list, IEnvironment environment)
@@ -198,31 +161,6 @@ namespace Lisp.Class
             var sExpression = Evaluate(list.Rest.Rest.First, environment);
             environment.TopEnvironment.AddSymbol(symbol.Name, sExpression);
             return sExpression;
-        }
-
-        private static ISExpression DivisionListEvaluator(IList list, IEnvironment environment)
-        {
-            if (list.Rest.IsEmpty)
-            {
-                return null;
-            }
-
-            IValue total = null;
-            list = list.Rest;
-            while (!list.IsEmpty)
-            {
-                var sExpression = Evaluate(list.First, environment);
-                var value = sExpression as IValue;
-                if (value == null)
-                {
-                    continue;
-                }
-
-                list = list.Rest;
-                total = total == null ? value : total.Division(value);
-            }
-
-            return total;
         }
 
         private static ISExpression EvalListEvaluator(IList list, IEnvironment environment)
@@ -298,6 +236,26 @@ namespace Lisp.Class
             return ListListEvaluatorRest(list.Rest, environment).Cons(first);
         }
 
+        private static ISExpression MacroEvaluator(IMacro macro, IList parameterList, IEnvironment environment)
+        {
+            ISExpression sExpression = null;
+            while (macro != null)
+            {
+                var env = new Environment();
+
+                foreach (var parameterSymbol in macro.ParameterSymbols)
+                {
+                    env.AddSymbol(parameterSymbol.Name, parameterList.First);
+                    parameterList = parameterList.Rest;
+                }
+
+                sExpression = Evaluate(macro.Body, env);
+                macro = sExpression as IMacro;
+            }
+
+            return Evaluate(sExpression, environment);
+        }
+
         private static ISExpression MacroListEvaluator(IList list, IEnvironment environment)
         {
             if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
@@ -325,31 +283,6 @@ namespace Lisp.Class
             }
 
             return new Macro(list.Rest.Rest.First, parameterSymbols);
-        }
-
-        private static ISExpression MultiplicationListEvaluator(IList list, IEnvironment environment)
-        {
-            if (list.Rest.IsEmpty)
-            {
-                return null;
-            }
-
-            IValue total = null;
-            list = list.Rest;
-            while (!list.IsEmpty)
-            {
-                var sExpression = Evaluate(list.First, environment);
-                var value = sExpression as IValue;
-                if (value == null)
-                {
-                    continue;
-                }
-
-                list = list.Rest;
-                total = total == null ? value : total.Multiplication(value);
-            }
-
-            return total;
         }
 
         private static ISExpression QuasiquoteListEvaluator(IList list, IEnvironment environment)
@@ -431,31 +364,6 @@ namespace Lisp.Class
             }
 
             return lst.Rest;
-        }
-
-        private static ISExpression SubtractionListEvaluator(IList list, IEnvironment environment)
-        {
-            if (list.Rest.IsEmpty)
-            {
-                return null;
-            }
-
-            IValue total = null;
-            list = list.Rest;
-            while (!list.IsEmpty)
-            {
-                var sExpression = Evaluate(list.First, environment);
-                var value = sExpression as IValue;
-                if (value == null)
-                {
-                    continue;
-                }
-
-                list = list.Rest;
-                total = total == null ? value : total.Subtraction(value);
-            }
-
-            return total;
         }
 
         private static ISExpression UnquoteListEvaluator(IList list, IEnvironment environment)

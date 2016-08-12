@@ -1,5 +1,4 @@
-﻿using System;
-using Lisp.Interface;
+﻿using Lisp.Interface;
 
 namespace Lisp.Class
 {
@@ -11,30 +10,5 @@ namespace Lisp.Class
         }
 
         public double Value { get; }
-
-        public IValue Addition(IValue value)
-        {
-            return new Double(Value + Convert.ToDouble(value.ToObject()));
-        }
-
-        public IValue Division(IValue value)
-        {
-            return new Double(Value/Convert.ToDouble(value.ToObject()));
-        }
-
-        public IValue Multiplication(IValue value)
-        {
-            return new Double(Value*Convert.ToDouble(value.ToObject()));
-        }
-
-        public IValue Subtraction(IValue value)
-        {
-            return new Double(Value - Convert.ToDouble(value.ToObject()));
-        }
-
-        public object ToObject()
-        {
-            return Value;
-        }
     }
 }

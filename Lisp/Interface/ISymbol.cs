@@ -1,6 +1,6 @@
 ﻿namespace Lisp.Interface
 {
-    public interface ISymbol : INamed
+    public interface ISymbol : IName
     {
     }
 }
