@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Interface Name="Lisp.Interface.IValue" Collapsed="true">
-    <Position X="12" Y="2.75" Width="1.5" />
+    <Position X="8.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QAABAAAAAAAAAAAAABAAAAAAABAAAgAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IValue.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -15,7 +15,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.ICollection" Collapsed="true">
-    <Position X="16" Y="1.5" Width="1.5" />
+    <Position X="12.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
       <FileName>Interface\ICollection.cs</FileName>
@@ -36,7 +36,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IList" Collapsed="true">
-    <Position X="14.25" Y="2.75" Width="1.5" />
+    <Position X="10.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AABAAAAAAAAAAQAAAAAAAIAAACAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IList.cs</FileName>
@@ -50,17 +50,10 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IMap" Collapsed="true">
-    <Position X="16" Y="2.75" Width="1.5" />
+    <Position X="12.25" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Interface\IMap.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Lisp.Interface.IMapEntry" Collapsed="true">
-    <Position X="13.75" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Interface\IMapEntry.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IMetaData" Collapsed="true">
@@ -78,7 +71,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.ISExpression" Collapsed="true">
-    <Position X="10.75" Y="0.5" Width="1.5" />
+    <Position X="9" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\ISExpression.cs</FileName>
@@ -92,7 +85,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IVector" Collapsed="true">
-    <Position X="17.75" Y="2.75" Width="1.5" />
+    <Position X="14" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IVector.cs</FileName>
@@ -103,34 +96,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IClosure.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Lisp.Interface.IDouble" Collapsed="true">
-    <Position X="10.25" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Interface\IDouble.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Lisp.Interface.IInteger" Collapsed="true">
-    <Position X="12" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Interface\IInteger.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Lisp.Interface.IString" Collapsed="true">
-    <Position X="15.5" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Interface\IString.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Lisp.Interface.IBoolean" Collapsed="true">
-    <Position X="8.5" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Interface\IBoolean.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

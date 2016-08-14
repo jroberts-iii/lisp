@@ -2,7 +2,7 @@
 
 namespace Lisp.Class
 {
-    public class List : IList
+    public class List : SExpression, IList
     {
         public static IList Empty = new List();
 

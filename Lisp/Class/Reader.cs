@@ -22,6 +22,24 @@ namespace Lisp.Class
                 {'~', UnquoteReader}
             };
 
+        private static readonly Dictionary<string, ISymbol> NameToSymbol = new Dictionary<string, ISymbol>
+        {
+            {"+", Constants.OpAddition},
+            {"&", Constants.OpBitwiseAnd},
+            {"|", Constants.OpBitwiseOr},
+            {"^", Constants.OpBitwiseXor},
+            {"=", Constants.OpEqual},
+            {">", Constants.OpGreaterThan},
+            {">=", Constants.OpGreaterThanOrEqual},
+            {"<", Constants.OpLessThan},
+            {"<=", Constants.OpLessThanOrEqual},
+            {"&&", Constants.OpLogicalAnd},
+            {"||", Constants.OpLogicalOr},
+            {"^^", Constants.OpLogicalXor},
+            {"*", Constants.OpMultiplication},
+            {"-", Constants.OpSubtraction}
+        };
+
         public static ISExpression Read(ITextReader textReader)
         {
             return GetSExpressionReader(textReader)(textReader);
@@ -66,6 +84,12 @@ namespace Lisp.Class
             }
 
             var value = stringBuilder.ToString();
+            ISymbol symbol;
+            if (NameToSymbol.TryGetValue(value, out symbol))
+            {
+                return symbol;
+            }
+
             switch (value)
             {
                 case "false":
@@ -81,12 +105,12 @@ namespace Lisp.Class
                     double doubleValue;
                     if (double.TryParse(value, NumberStyles.Integer, NumberFormatInfo.CurrentInfo, out doubleValue))
                     {
-                        return new Integer((int) doubleValue);
+                        return Value.Create((int) doubleValue);
                     }
 
                     if (double.TryParse(value, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out doubleValue))
                     {
-                        return new Double(doubleValue);
+                        return Value.Create(doubleValue);
                     }
 
                     var name = stringBuilder.ToString();
@@ -236,7 +260,7 @@ namespace Lisp.Class
                 nextChar = textReader.Read();
             }
 
-            return new String(stringBuilder.ToString());
+            return Value.Create(stringBuilder.ToString());
         }
 
         private static ISExpression UnquoteReader(ITextReader textReader)

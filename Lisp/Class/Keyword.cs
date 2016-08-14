@@ -2,7 +2,7 @@
 
 namespace Lisp.Class
 {
-    public class Keyword : IKeyword
+    public class Keyword : SExpression, IKeyword
     {
         public Keyword(string name) : this(name, string.Empty)
         {

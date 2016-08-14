@@ -13,24 +13,24 @@ namespace Lisp.Class
                 return;
             }
 
-            var booleanValue = sExpression as IBoolean;
+            var booleanValue = sExpression as IValue<bool>;
             if (booleanValue != null)
             {
-                textWriter.Write(booleanValue.Value ? "true" : "false");
+                textWriter.Write(booleanValue.Val ? "true" : "false");
                 return;
             }
 
-            var doubleValue = sExpression as IDouble;
+            var doubleValue = sExpression as IValue<double>;
             if (doubleValue != null)
             {
-                textWriter.Write(doubleValue.Value);
+                textWriter.Write(doubleValue.Val);
                 return;
             }
 
-            var integerValue = sExpression as IInteger;
+            var integerValue = sExpression as IValue<int>;
             if (integerValue != null)
             {
-                textWriter.Write(integerValue.Value);
+                textWriter.Write(integerValue.Val);
                 return;
             }
 
@@ -42,12 +42,19 @@ namespace Lisp.Class
                 return;
             }
 
-            var stringValue = sExpression as IString;
+            var stringValue = sExpression as IValue<string>;
             if (stringValue != null)
             {
                 textWriter.Write("\"");
-                textWriter.Write(stringValue.Value);
+                textWriter.Write(stringValue.Val);
                 textWriter.Write("\"");
+                return;
+            }
+
+            var value = sExpression as IValue;
+            if (value != null)
+            {
+                textWriter.Write(value.ToString());
                 return;
             }
 

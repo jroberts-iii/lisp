@@ -2,7 +2,7 @@
 
 namespace Lisp.Class
 {
-    public class Symbol : ISymbol
+    public class Symbol : SExpression, ISymbol
     {
         public Symbol(string name) : this(name, string.Empty)
         {

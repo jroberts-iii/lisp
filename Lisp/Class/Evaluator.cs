@@ -10,13 +10,13 @@ namespace Lisp.Class
             new Dictionary<string, ListEvaluator>
             {
                 {"cond", CondListEvaluator},
-                {"cons", ConsListEvaluator},
                 {"define", DefineListEvaluator},
-                {"eval", EvalListEvaluator},
+                {"evaluate", EvaluateListEvaluator},
                 {"first", FirstListEvaluator},
                 {"lambda", LambdaListEvaluator},
-                {"macro", MacroListEvaluator},
                 {"list", ListListEvaluator},
+                {"macro", MacroListEvaluator},
+                {"prepend", PrependListEvaluator},
                 {"quasiquote", QuasiquoteListEvaluator},
                 {"quote", QuoteListEvaluator},
                 {"rest", RestListEvaluator},
@@ -58,46 +58,26 @@ namespace Lisp.Class
             {
                 sExpression = Evaluate(sExpression, environment);
             }
-
-            var symbol = sExpression as ISymbol;
-            if (symbol != null)
+            else
             {
-                ListEvaluator listEvaluator;
-                if (NameToListEvaluator.TryGetValue(symbol.Name, out listEvaluator))
+                var symbol = sExpression as ISymbol;
+                if (symbol != null)
                 {
-                    return listEvaluator(list, environment);
+                    ListEvaluator listEvaluator;
+                    if (NameToListEvaluator.TryGetValue(symbol.Name, out listEvaluator))
+                    {
+                        return listEvaluator(list, environment);
+                    }
+
+                    ISExpression symbolValue;
+                    if (environment.TryGetSymbol(symbol.Name, out symbolValue))
+                    {
+                        sExpression = symbolValue;
+                    }
                 }
-
-                environment.TryGetSymbol(symbol.Name, out sExpression);
             }
 
-            var macro = sExpression as IMacro;
-            if (macro != null)
-            {
-                return MacroEvaluator(macro, list.Rest, environment);
-            }
-
-            var closure = sExpression as IClosure;
-            if (closure != null)
-            {
-                return ClosureEvaluator(closure, list.Rest, environment);
-            }
-
-            throw new LispException("Expected (<closure/macro> parameters)");
-        }
-
-        private static ISExpression ClosureEvaluator(IClosure closure, IList parameterList, IEnvironment environment)
-        {
-            var env = new Environment(closure.ClosureEnvironment);
-
-            foreach (var parameterSymbol in closure.ParameterSymbols)
-            {
-                var sExpression = Evaluate(parameterList.First, environment);
-                env.AddSymbol(parameterSymbol.Name, sExpression);
-                parameterList = parameterList.Rest;
-            }
-
-            return Evaluate(closure.Body, env);
+            return sExpression.InvokeNativeMethod(list, environment);
         }
 
         private static ISExpression CondListEvaluator(IList list, IEnvironment environment)
@@ -110,39 +90,22 @@ namespace Lisp.Class
             var conditions = list.Rest;
             while (!conditions.IsEmpty)
             {
-                var condition = conditions.First as IList;
-                if (condition == null)
+                var lst = conditions.First as IList;
+                if (lst == null)
                 {
-                    throw new LispException(
-                        "Expected (cond (condition1 result1) (condition2 result 2)... (T resultN)).  Conditions must be a list.");
+                    throw new LispException("Expected (cond (condition result)*).  Condition must be a list.");
                 }
 
-                var conditional = Evaluate(condition.First, environment);
-                if (conditional != null)
+                var conditional = Evaluate(lst.First, environment);
+                if (IsTrue(conditional))
                 {
-                    return Evaluate(condition.Rest.First, environment);
+                    return Evaluate(lst.Rest.First, environment);
                 }
 
                 conditions = conditions.Rest;
             }
 
             return null;
-        }
-
-        private static ISExpression ConsListEvaluator(IList list, IEnvironment environment)
-        {
-            if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
-            {
-                throw new LispException("Expected (cons form list)");
-            }
-
-            var consList = list.Rest.First as IList;
-            if (consList == null)
-            {
-                throw new LispException("Expected (cons form list).  Collection is not a list.");
-            }
-
-            return consList.Cons(list.First);
         }
 
         private static ISExpression DefineListEvaluator(IList list, IEnvironment environment)
@@ -163,11 +126,11 @@ namespace Lisp.Class
             return sExpression;
         }
 
-        private static ISExpression EvalListEvaluator(IList list, IEnvironment environment)
+        private static ISExpression EvaluateListEvaluator(IList list, IEnvironment environment)
         {
             if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
             {
-                throw new LispException("Expected (eval form)");
+                throw new LispException("Expected (evaluate form)");
             }
 
             var sExpression = Evaluate(list.Rest.First, environment);
@@ -178,17 +141,28 @@ namespace Lisp.Class
         {
             if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
             {
-                throw new LispException("Expected (first list)");
+                throw new LispException("Expected (first collection)");
             }
 
             var sExpression = Evaluate(list.Rest.First, environment);
-            var lst = sExpression as IList;
-            if (lst == null)
+            var collection = sExpression as ICollection;
+            if (collection == null)
             {
-                throw new LispException("Expected (first list).  IList is not a list.");
+                throw new LispException("Expected (first collection). Collection is not a collection.");
             }
 
-            return lst.First;
+            return collection.ToList().First;
+        }
+
+        private static bool IsTrue(ISExpression sExpression)
+        {
+            if (sExpression == null)
+            {
+                return false;
+            }
+
+            var boolean = sExpression as IValue<bool>;
+            return boolean == null || boolean.Val;
         }
 
         private static ISExpression LambdaListEvaluator(IList list, IEnvironment environment)
@@ -236,26 +210,6 @@ namespace Lisp.Class
             return ListListEvaluatorRest(list.Rest, environment).Cons(first);
         }
 
-        private static ISExpression MacroEvaluator(IMacro macro, IList parameterList, IEnvironment environment)
-        {
-            ISExpression sExpression = null;
-            while (macro != null)
-            {
-                var env = new Environment();
-
-                foreach (var parameterSymbol in macro.ParameterSymbols)
-                {
-                    env.AddSymbol(parameterSymbol.Name, parameterList.First);
-                    parameterList = parameterList.Rest;
-                }
-
-                sExpression = Evaluate(macro.Body, env);
-                macro = sExpression as IMacro;
-            }
-
-            return Evaluate(sExpression, environment);
-        }
-
         private static ISExpression MacroListEvaluator(IList list, IEnvironment environment)
         {
             if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
@@ -283,6 +237,22 @@ namespace Lisp.Class
             }
 
             return new Macro(list.Rest.Rest.First, parameterSymbols);
+        }
+
+        private static ISExpression PrependListEvaluator(IList list, IEnvironment environment)
+        {
+            if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
+            {
+                throw new LispException("Expected (prepend form list)");
+            }
+
+            var consList = list.Rest.First as IList;
+            if (consList == null)
+            {
+                throw new LispException("Expected (prepend form list).  List is not a list.");
+            }
+
+            return consList.Cons(list.First);
         }
 
         private static ISExpression QuasiquoteListEvaluator(IList list, IEnvironment environment)
@@ -353,17 +323,17 @@ namespace Lisp.Class
         {
             if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
             {
-                throw new LispException("Expected (rest list)");
+                throw new LispException("Expected (rest collection)");
             }
 
             var sExpression = Evaluate(list.Rest.First, environment);
-            var lst = sExpression as IList;
-            if (lst == null)
+            var collection = sExpression as ICollection;
+            if (collection == null)
             {
-                throw new LispException("Expected (rest list).  IList is not a list.");
+                throw new LispException("Expected (rest collection).  Collection is not a collection.");
             }
 
-            return lst.Rest;
+            return collection.ToList().Rest;
         }
 
         private static ISExpression UnquoteListEvaluator(IList list, IEnvironment environment)
