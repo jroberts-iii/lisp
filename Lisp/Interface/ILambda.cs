@@ -6,5 +6,6 @@ namespace Lisp.Interface
     {
         ISExpression Body { get; }
         IEnumerable<ISymbol> ParameterSymbols { get; }
+        ISExpression Evaluate(IEnvironment environment, IList parameters);
     }
 }

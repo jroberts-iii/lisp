@@ -17,10 +17,10 @@ namespace Repl
                 try
                 {
                     var sExpression = Reader.Read(new StringTextReader(text));
-                    sExpression = Evaluator.Evaluate(sExpression, environment);
+                    sExpression = SExpression.Evaluate(environment, sExpression);
                     using (var stringWriter = new StringWriter())
                     {
-                        Writer.Write(stringWriter, sExpression);
+                        SExpression.Write(stringWriter, sExpression);
                         Console.WriteLine(stringWriter.ToString());
                     }
                 }

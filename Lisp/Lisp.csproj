@@ -36,7 +36,6 @@
   <ItemGroup>
     <Compile Include="Class\Constants.cs" />
     <Compile Include="Class\Environment.cs" />
-    <Compile Include="Class\Evaluator.cs" />
     <Compile Include="Class\Keyword.cs" />
     <Compile Include="Class\Macro.cs" />
     <Compile Include="Class\Closure.cs" />
@@ -47,7 +46,6 @@
     <Compile Include="Class\Symbol.cs" />
     <Compile Include="Class\TopEnvironment.cs" />
     <Compile Include="Class\Value.cs" />
-    <Compile Include="Class\Writer.cs" />
     <Compile Include="Exception\LispException.cs" />
     <Compile Include="Interface\IAtom.cs" />
     <Compile Include="Interface\IEnvironment.cs" />

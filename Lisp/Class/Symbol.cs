@@ -1,4 +1,6 @@
-﻿using Lisp.Interface;
+﻿using System.IO;
+using Lisp.Exception;
+using Lisp.Interface;
 
 namespace Lisp.Class
 {
@@ -17,5 +19,21 @@ namespace Lisp.Class
         public string FullName => string.IsNullOrEmpty(Namespace) ? Name : $"{Namespace}.{Name}";
         public string Name { get; }
         public string Namespace { get; }
+
+        public override ISExpression Evaluate(IEnvironment environment)
+        {
+            ISExpression sExpression;
+            if (environment.TryGetSymbol(FullName, out sExpression))
+            {
+                return sExpression;
+            }
+
+            throw new LispException($"Undefined symbol {FullName}.");
+        }
+
+        public override void Write(TextWriter textWriter)
+        {
+            textWriter.Write(FullName);
+        }
     }
 }

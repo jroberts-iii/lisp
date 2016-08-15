@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Lisp.Interface;
 
 namespace Lisp.Class
@@ -30,9 +31,39 @@ namespace Lisp.Class
             return Val;
         }
 
-        public T OpAddition(int value)
+        public override void Write(TextWriter textWriter)
         {
-            return default(T);
+            var booleanValue = this as IValue<bool>;
+            if (booleanValue != null)
+            {
+                textWriter.Write(booleanValue.Val ? "true" : "false");
+                return;
+            }
+
+            var doubleValue = this as IValue<double>;
+            if (doubleValue != null)
+            {
+                textWriter.Write(doubleValue.Val);
+                return;
+            }
+
+            var integerValue = this as IValue<int>;
+            if (integerValue != null)
+            {
+                textWriter.Write(integerValue.Val);
+                return;
+            }
+
+            var stringValue = this as IValue<string>;
+            if (stringValue != null)
+            {
+                textWriter.Write("\"");
+                textWriter.Write(stringValue.Val);
+                textWriter.Write("\"");
+                return;
+            }
+
+            textWriter.Write(Val.ToString());
         }
     }
 }

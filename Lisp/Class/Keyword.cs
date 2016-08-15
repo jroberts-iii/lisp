@@ -1,4 +1,5 @@
-﻿using Lisp.Interface;
+﻿using System.IO;
+using Lisp.Interface;
 
 namespace Lisp.Class
 {
@@ -17,5 +18,11 @@ namespace Lisp.Class
         public string FullName => string.IsNullOrEmpty(Namespace) ? Name : $"{Namespace}.{Name}";
         public string Name { get; }
         public string Namespace { get; }
+
+        public override void Write(TextWriter textWriter)
+        {
+            textWriter.Write(":");
+            textWriter.Write(FullName);
+        }
     }
 }

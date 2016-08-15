@@ -1,11 +1,13 @@
 ﻿using System;
+using System.IO;
 
 namespace Lisp.Interface
 {
     public interface ISExpression
     {
+        ISExpression Evaluate(IEnvironment environment);
         Type GetNativeType();
         object GetNativeValue();
-        ISExpression InvokeNativeMethod(IList list, IEnvironment environment);
+        void Write(TextWriter textWriter);
     }
 }

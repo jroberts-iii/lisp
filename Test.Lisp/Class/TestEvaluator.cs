@@ -249,7 +249,7 @@ namespace Test.Lisp.Class
         private static void Check(string input, string output, IEnvironment environment)
         {
             var sExpression = Read(input);
-            var evaluated = Evaluator.Evaluate(sExpression, environment);
+            var evaluated = SExpression.Evaluate(environment, sExpression);
             var result = Write(evaluated);
             if (result != output)
             {
@@ -270,7 +270,7 @@ namespace Test.Lisp.Class
         {
             using (var stringWriter = new StringWriter())
             {
-                Writer.Write(stringWriter, sExpression);
+                SExpression.Write(stringWriter, sExpression);
                 return stringWriter.ToString();
             }
         }

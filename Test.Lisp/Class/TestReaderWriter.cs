@@ -218,7 +218,7 @@ namespace Test.Lisp.Class
         {
             using (var stringWriter = new StringWriter())
             {
-                Writer.Write(stringWriter, sExpression);
+                SExpression.Write(stringWriter, sExpression);
                 return stringWriter.ToString();
             }
         }

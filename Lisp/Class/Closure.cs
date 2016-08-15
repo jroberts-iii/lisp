@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Lisp.Interface;
 
 namespace Lisp.Class
@@ -16,18 +17,22 @@ namespace Lisp.Class
         public IEnvironment ClosureEnvironment { get; }
         public IEnumerable<ISymbol> ParameterSymbols { get; }
 
-        public override ISExpression InvokeNativeMethod(IList list, IEnvironment environment)
+        public ISExpression Evaluate(IEnvironment environment, IList parameters)
         {
             var env = new Environment(ClosureEnvironment);
 
-            list = list.Rest;
             foreach (var parameterSymbol in ParameterSymbols)
             {
-                env.AddSymbol(parameterSymbol.Name, Evaluator.Evaluate(list.First, environment));
-                list = list.Rest;
+                env.AddSymbol(parameterSymbol.Name, Evaluate(environment, parameters.First));
+                parameters = parameters.Rest;
             }
 
-            return Evaluator.Evaluate(Body, env);
+            return Evaluate(env, Body);
+        }
+
+        public override void Write(TextWriter textWriter)
+        {
+            textWriter.Write("<lambda>");
         }
     }
 }
