@@ -13,7 +13,7 @@ namespace Lisp.Class
 
         public static ISExpression Evaluate(IEnvironment environment, ISExpression sExpression)
         {
-            return Evaluate(environment, sExpression);
+            return sExpression?.Evaluate(environment);
         }
 
         public virtual Type GetNativeType()

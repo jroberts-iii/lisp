@@ -19,7 +19,7 @@ namespace Test.Lisp.Class
         public void Evaluate_Anonymous_Successful()
         {
             var environment = new Environment();
-            Check("((lambda (x y) (list x y)) 1 2)", "(1 2)", environment);
+            Check("((closure (x y) (list x y)) 1 2)", "(1 2)", environment);
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace Test.Lisp.Class
         public void Evaluate_Lambda_Successful()
         {
             var environment = new Environment();
-            Check("(lambda (x) x)", "<lambda>", environment);
+            Check("(closure (x) x)", "<closure>", environment);
         }
 
         [Test]

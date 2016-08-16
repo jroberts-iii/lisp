@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Lisp.Interface
+﻿namespace Lisp.Interface
 {
     public interface ILambda : IAtom
     {
-        ISExpression Body { get; }
-        IEnumerable<ISymbol> ParameterSymbols { get; }
-        ISExpression Evaluate(IEnvironment environment, IList parameters);
+        ISExpression Evaluate(IEnvironment environment, IList list);
     }
 }

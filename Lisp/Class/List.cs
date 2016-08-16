@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Lisp.Exception;
 using Lisp.Interface;
 
@@ -10,11 +11,11 @@ namespace Lisp.Class
         private static readonly Dictionary<string, ListEvaluator> NameToListEvaluator =
             new Dictionary<string, ListEvaluator>
             {
+                {"closure", ClosureListEvaluator},
                 {"cond", CondListEvaluator},
                 {"define", DefineListEvaluator},
                 {"evaluate", EvaluateListEvaluator},
                 {"first", FirstListEvaluator},
-                {"lambda", LambdaListEvaluator},
                 {"list", ListListEvaluator},
                 {"macro", MacroListEvaluator},
                 {"prepend", PrependListEvaluator},
@@ -72,9 +73,9 @@ namespace Lisp.Class
                 }
 
                 ISExpression sExpression;
-                if (environment.TryGetSymbol(specialSymbol.FullName, out sExpression))
+                if (!environment.TryGetSymbol(specialSymbol.FullName, out sExpression))
                 {
-                    return sExpression;
+                    return NativeListEvaluator(specialSymbol, this, environment);
                 }
             }
 
@@ -84,7 +85,12 @@ namespace Lisp.Class
                 throw new LispException("List.Evaluate expected First to evaluate to a lambda.");
             }
 
-            return lambda.Evaluate(environment, Rest);
+            return lambda.Evaluate(environment, this);
+        }
+
+        public IList ToList()
+        {
+            return this;
         }
 
         public override void Write(TextWriter textWriter)
@@ -93,21 +99,45 @@ namespace Lisp.Class
             IList list = this;
             if (!list.IsEmpty)
             {
-                SExpression.Write(textWriter, list.First);
+                Write(textWriter, list.First);
                 while (!list.Rest.IsEmpty)
                 {
                     list = list.Rest;
                     textWriter.Write(" ");
-                    SExpression.Write(textWriter, list.First);
+                    Write(textWriter, list.First);
                 }
             }
 
             textWriter.Write(")");
         }
 
-        public IList ToList()
+        private static ISExpression ClosureListEvaluator(IList list, IEnvironment environment)
         {
-            return this;
+            if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
+            {
+                throw new LispException("Expected (lambda parameterList body)");
+            }
+
+            var parameterList = list.Rest.First as IList;
+            if (parameterList == null)
+            {
+                throw new LispException("Expected (lambda parameterList body). ParameterList is not a list.");
+            }
+
+            var parameterSymbols = new List<ISymbol>();
+            while (!parameterList.IsEmpty)
+            {
+                var symbol = parameterList.First as ISymbol;
+                if (symbol == null)
+                {
+                    throw new LispException("Expected (lambda parameterList body). ParameterList not a list of symbols.");
+                }
+
+                parameterSymbols.Add(symbol);
+                parameterList = parameterList.Rest;
+            }
+
+            return new Closure(list.Rest.Rest.First, environment, parameterSymbols);
         }
 
         private static ISExpression CondListEvaluator(IList list, IEnvironment environment)
@@ -195,35 +225,6 @@ namespace Lisp.Class
             return boolean == null || boolean.Val;
         }
 
-        private static ISExpression LambdaListEvaluator(IList list, IEnvironment environment)
-        {
-            if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
-            {
-                throw new LispException("Expected (lambda parameterList body)");
-            }
-
-            var parameterList = list.Rest.First as IList;
-            if (parameterList == null)
-            {
-                throw new LispException("Expected (lambda parameterList body). ParameterList is not a list.");
-            }
-
-            var parameterSymbols = new List<ISymbol>();
-            while (!parameterList.IsEmpty)
-            {
-                var symbol = parameterList.First as ISymbol;
-                if (symbol == null)
-                {
-                    throw new LispException("Expected (lambda parameterList body). ParameterList not a list of symbols.");
-                }
-
-                parameterSymbols.Add(symbol);
-                parameterList = parameterList.Rest;
-            }
-
-            return new Closure(list.Rest.Rest.First, environment, parameterSymbols);
-        }
-
         private static IList ListListEvaluator(IList list, IEnvironment environment)
         {
             return ListListEvaluatorRest(list.Rest, environment);
@@ -267,6 +268,26 @@ namespace Lisp.Class
             }
 
             return new Macro(list.Rest.Rest.First, parameterSymbols);
+        }
+
+        private static ISExpression NativeListEvaluator(ISymbol symbol, IList list, IEnvironment environment)
+        {
+            var parameters = new List<ISExpression>();
+            list = list.Rest;
+            while (!list.IsEmpty)
+            {
+                parameters.Add(Evaluate(environment, list.First));
+                list = list.Rest;
+            }
+
+            if (parameters.Count == 0)
+            {
+                throw new LispException("Expected (native parameters*).  No parameters.");
+            }
+
+            var firstParameter = parameters.First();
+
+            return null;
         }
 
         private static ISExpression PrependListEvaluator(IList list, IEnvironment environment)

@@ -15,14 +15,15 @@ namespace Lisp.Class
         public ISExpression Body { get; }
         public IEnumerable<ISymbol> ParameterSymbols { get; }
 
-        public ISExpression Evaluate(IEnvironment environment, IList parameters)
+        public ISExpression Evaluate(IEnvironment environment, IList list)
         {
             var env = new Environment();
 
+            list = list.Rest;
             foreach (var parameterSymbol in ParameterSymbols)
             {
-                env.AddSymbol(parameterSymbol.Name, parameters.First);
-                parameters = parameters.Rest;
+                env.AddSymbol(parameterSymbol.Name, list.First);
+                list = list.Rest;
             }
 
             var sExpression = Evaluate(env, Body);
