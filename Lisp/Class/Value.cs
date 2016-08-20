@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Lisp.Interface;
 
 namespace Lisp.Class
@@ -20,16 +19,6 @@ namespace Lisp.Class
         }
 
         public T Val { get; }
-
-        public override Type GetNativeType()
-        {
-            return typeof(T);
-        }
-
-        public override object GetNativeValue()
-        {
-            return Val;
-        }
 
         public override void Write(TextWriter textWriter)
         {

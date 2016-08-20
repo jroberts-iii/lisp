@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Lisp.Interface;
 
 namespace Lisp.Class
@@ -14,16 +13,6 @@ namespace Lisp.Class
         public static ISExpression Evaluate(IEnvironment environment, ISExpression sExpression)
         {
             return sExpression?.Evaluate(environment);
-        }
-
-        public virtual Type GetNativeType()
-        {
-            return GetType();
-        }
-
-        public virtual object GetNativeValue()
-        {
-            return this;
         }
 
         public virtual void Write(TextWriter textWriter)
