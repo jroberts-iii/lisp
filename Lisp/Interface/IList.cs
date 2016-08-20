@@ -1,6 +1,8 @@
-﻿namespace Lisp.Interface
+﻿using System.Collections.Generic;
+
+namespace Lisp.Interface
 {
-    public interface IList : ICollection
+    public interface IList : ICollection, IEnumerable<ISExpression>
     {
         ISExpression First { get; }
         bool IsEmpty { get; }

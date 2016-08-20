@@ -1,6 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using Lisp.Exception;
 using Lisp.Interface;
+using IList = Lisp.Interface.IList;
 
 namespace Lisp.Class
 {
@@ -52,6 +56,11 @@ namespace Lisp.Class
             return lambda.Evaluate(environment, this);
         }
 
+        public IEnumerator<ISExpression> GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
         public IList ToList()
         {
             return this;
@@ -60,19 +69,52 @@ namespace Lisp.Class
         public override void Write(TextWriter textWriter)
         {
             textWriter.Write("(");
-            IList list = this;
-            if (!list.IsEmpty)
+
+            if (!IsEmpty)
             {
-                Write(textWriter, list.First);
-                while (!list.Rest.IsEmpty)
+                Write(textWriter, First);
+                foreach (var sExpression in Rest)
                 {
-                    list = list.Rest;
                     textWriter.Write(" ");
-                    Write(textWriter, list.First);
+                    Write(textWriter, sExpression);
                 }
             }
 
             textWriter.Write(")");
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public class Enumerator : IEnumerator<ISExpression>
+        {
+            private IList _list;
+
+            public Enumerator(IList list)
+            {
+                _list = new List(null, list);
+            }
+
+            public ISExpression Current => _list.First;
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose()
+            {
+            }
+
+            public bool MoveNext()
+            {
+                _list = _list.Rest;
+                return !_list.IsEmpty;
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

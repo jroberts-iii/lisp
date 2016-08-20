@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Lisp.Exception;
 using Lisp.Interface;
 
@@ -12,6 +13,7 @@ namespace Lisp.Class
 
         public TopEnvironment()
         {
+            AddLambda(new AdditionLambda());
             AddLambda(new ClosureLambda());
             AddLambda(new CondLambda());
             AddLambda(new DefineLambda());
@@ -25,6 +27,22 @@ namespace Lisp.Class
             AddLambda(new RestLambda());
             AddLambda(new UnquoteLambda());
             AddLambda(new UnquoteSplicingLambda());
+
+            /*
+                {"&", Constants.OpBitwiseAnd},
+                {"|", Constants.OpBitwiseOr},
+                {"^", Constants.OpBitwiseXor},
+                {"=", Constants.OpEqual},
+                {">", Constants.OpGreaterThan},
+                {">=", Constants.OpGreaterThanOrEqual},
+                {"<", Constants.OpLessThan},
+                {"<=", Constants.OpLessThanOrEqual},
+                {"&&", Constants.OpLogicalAnd},
+                {"||", Constants.OpLogicalOr},
+                {"^^", Constants.OpLogicalXor},
+                {"*", Constants.OpMultiplication},
+                {"-", Constants.OpSubtraction}
+            */
         }
 
         public void AddSymbol(string name, ISExpression sExpression)
@@ -47,6 +65,31 @@ namespace Lisp.Class
         }
     }
 
+    internal class AdditionLambda : SExpression, ILambda
+    {
+        public ISExpression Evaluate(IEnvironment environment, IList list)
+        {
+            if (list.Rest.IsEmpty)
+            {
+                throw new LispException("Expected (+ value*)");
+            }
+
+            var sum = list.Rest.OfType<IValue>()
+                .Aggregate<IValue, object>(null, (current, value) => Operation(current ?? 0, value.Val));
+            return new Value(sum);
+        }
+
+        public static object Operation(dynamic a, dynamic b)
+        {
+            return a + b;
+        }
+
+        public override void Write(TextWriter textWriter)
+        {
+            textWriter.Write("+");
+        }
+    }
+
     internal class ClosureLambda : SExpression, ILambda
     {
         public ISExpression Evaluate(IEnvironment environment, IList list)
@@ -63,16 +106,15 @@ namespace Lisp.Class
             }
 
             var parameterSymbols = new List<ISymbol>();
-            while (!parameterList.IsEmpty)
+            foreach (var sExpression in parameterList)
             {
-                var symbol = parameterList.First as ISymbol;
+                var symbol = sExpression as ISymbol;
                 if (symbol == null)
                 {
                     throw new LispException("Expected (lambda parameterList body). ParameterList not a list of symbols.");
                 }
 
                 parameterSymbols.Add(symbol);
-                parameterList = parameterList.Rest;
             }
 
             return new Closure(list.Rest.Rest.First, environment, parameterSymbols);
@@ -93,10 +135,9 @@ namespace Lisp.Class
                 return null;
             }
 
-            var conditions = list.Rest;
-            while (!conditions.IsEmpty)
+            foreach (var sExpression in list.Rest)
             {
-                var condition = conditions.First as IList;
+                var condition = sExpression as IList;
                 if (condition == null)
                 {
                     throw new LispException("Expected (cond (condition result)*).  Condition must be a list.");
@@ -107,8 +148,6 @@ namespace Lisp.Class
                 {
                     return Evaluate(environment, condition.Rest.First);
                 }
-
-                conditions = conditions.Rest;
             }
 
             return null;
@@ -121,13 +160,13 @@ namespace Lisp.Class
 
         private static bool IsTrue(ISExpression sExpression)
         {
-            if (sExpression == null)
+            var value = sExpression as IValue;
+            if (value?.Val is bool)
             {
-                return false;
+                return (bool) value.Val;
             }
 
-            var boolean = sExpression as IValue<bool>;
-            return boolean == null || boolean.Val;
+            return sExpression != null;
         }
     }
 
@@ -241,16 +280,15 @@ namespace Lisp.Class
             }
 
             var parameterSymbols = new List<ISymbol>();
-            while (!parameterList.IsEmpty)
+            foreach (var sExpression in parameterList)
             {
-                var symbol = parameterList.First as ISymbol;
+                var symbol = sExpression as ISymbol;
                 if (symbol == null)
                 {
                     throw new LispException("Expected (macro parameterList body). ParameterList not a list of symbols.");
                 }
 
                 parameterSymbols.Add(symbol);
-                parameterList = parameterList.Rest;
             }
 
             return new Macro(list.Rest.Rest.First, parameterSymbols);
