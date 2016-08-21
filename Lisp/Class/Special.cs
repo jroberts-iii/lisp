@@ -6,110 +6,31 @@ using Lisp.Interface;
 
 namespace Lisp.Class
 {
-    public class TopEnvironment : ITopEnvironment
+    public static class Special
     {
-        private readonly Dictionary<string, ISExpression> _symbolNameToSExpression =
-            new Dictionary<string, ISExpression>();
-
-        public TopEnvironment()
+        public static void AddSymbols(IEnvironment environment)
         {
-            AddLambda(new AdditionLambda());
-            AddLambda(new BitwiseAndLambda());
-            AddLambda(new BitwiseOrLambda());
-            AddLambda(new BitwiseXorLambda());
-            AddLambda(new ClosureLambda());
-            AddLambda(new CondLambda());
-            AddLambda(new DefineLambda());
-            AddLambda(new DivisionLambda());
-            AddLambda(new EqualLambda());
-            AddLambda(new EvaluateLambda());
-            AddLambda(new FirstLambda());
-            AddLambda(new GreaterThanLambda());
-            AddLambda(new GreaterThanOrEqualLambda());
-            AddLambda(new LessThanLambda());
-            AddLambda(new LessThanOrEqualLambda());
-            AddLambda(new ListLambda());
-            AddLambda(new LogicalAndLambda());
-            AddLambda(new LogicalOrLambda());
-            AddLambda(new MacroLambda());
-            AddLambda(new MultiplicationLambda());
-            AddLambda(new PrependLambda());
-            AddLambda(new QuasiquoteLambda());
-            AddLambda(new QuoteLambda());
-            AddLambda(new RestLambda());
-            AddLambda(new SubtractionLambda());
-            AddLambda(new UnquoteLambda());
-            AddLambda(new UnquoteSplicingLambda());
+            AddLambda(environment, new ClosureLambda());
+            AddLambda(environment, new CondLambda());
+            AddLambda(environment, new DefineLambda());
+            AddLambda(environment, new EvaluateLambda());
+            AddLambda(environment, new FirstLambda());
+            AddLambda(environment, new ListLambda());
+            AddLambda(environment, new MacroLambda());
+            AddLambda(environment, new PrependLambda());
+            AddLambda(environment, new QuasiquoteLambda());
+            AddLambda(environment, new QuoteLambda());
+            AddLambda(environment, new RestLambda());
+            AddLambda(environment, new UnquoteLambda());
+            AddLambda(environment, new UnquoteSplicingLambda());
         }
 
-        public void AddSymbol(string name, ISExpression sExpression)
-        {
-            _symbolNameToSExpression[name] = sExpression;
-        }
-
-        public bool TryGetSymbol(string name, out ISExpression sExpression)
-        {
-            return _symbolNameToSExpression.TryGetValue(name, out sExpression);
-        }
-
-        private void AddLambda(ILambda lambda)
+        private static void AddLambda(IEnvironment environment, ILambda lambda)
         {
             using (var stringWriter = new StringWriter())
             {
                 lambda.Write(stringWriter);
-                AddSymbol(stringWriter.ToString(), lambda);
-            }
-        }
-
-        private class AdditionLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateManyParameters(environment, list, (a, b) => a + b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("+");
-            }
-        }
-
-        private class BitwiseAndLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateManyParameters(environment, list, (a, b) => a & b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("&");
-            }
-        }
-
-        private class BitwiseOrLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateManyParameters(environment, list, (a, b) => a | b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("|");
-            }
-        }
-
-        private class BitwiseXorLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateManyParameters(environment, list, (a, b) => a ^ b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("^");
+                environment.AddSymbol(stringWriter.ToString(), lambda);
             }
         }
 
@@ -209,32 +130,6 @@ namespace Lisp.Class
             }
         }
 
-        private class DivisionLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateManyParameters(environment, list, (a, b) => a/b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("/");
-            }
-        }
-
-        private class EqualLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateTwoParameters(environment, list, (a, b) => a == b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("=");
-            }
-        }
-
         private class EvaluateLambda : SExpression, ILambda
         {
             public ISExpression Evaluate(IEnvironment environment, IList list)
@@ -279,58 +174,6 @@ namespace Lisp.Class
             }
         }
 
-        private class GreaterThanLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateTwoParameters(environment, list, (a, b) => a > b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write(">");
-            }
-        }
-
-        private class GreaterThanOrEqualLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateTwoParameters(environment, list, (a, b) => a >= b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write(">=");
-            }
-        }
-
-        private class LessThanLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateTwoParameters(environment, list, (a, b) => a < b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("<");
-            }
-        }
-
-        private class LessThanOrEqualLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateTwoParameters(environment, list, (a, b) => a <= b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("<=");
-            }
-        }
-
         private class ListLambda : SExpression, ILambda
         {
             public ISExpression Evaluate(IEnvironment environment, IList list)
@@ -351,33 +194,7 @@ namespace Lisp.Class
                 }
 
                 var first = Evaluate(environment, list.First);
-                return ListListEvaluatorRest(list.Rest, environment).Cons(first);
-            }
-        }
-
-        private class LogicalAndLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateManyParametersBoolean(environment, list, (a, b) => a && b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("&&");
-            }
-        }
-
-        private class LogicalOrLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateManyParametersBoolean(environment, list, (a, b) => a || b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("||");
+                return ListListEvaluatorRest(list.Rest, environment).Prepend(first);
             }
         }
 
@@ -418,19 +235,6 @@ namespace Lisp.Class
             }
         }
 
-        private class MultiplicationLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateManyParameters(environment, list, (a, b) => a*b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("*");
-            }
-        }
-
         private class PrependLambda : SExpression, ILambda
         {
             public ISExpression Evaluate(IEnvironment environment, IList list)
@@ -446,7 +250,7 @@ namespace Lisp.Class
                     throw new LispException("Expected (prepend form list).  List is not a list.");
                 }
 
-                return consList.Cons(list.First);
+                return consList.Prepend(list.First);
             }
 
             public override void Write(TextWriter textWriter)
@@ -488,7 +292,7 @@ namespace Lisp.Class
                     if (form.First == Constants.Unquote)
                     {
                         var first = Evaluate(environment, form.Rest.First);
-                        return QuasiquoteListEvaluatorRest(list.Rest, environment).Cons(first);
+                        return QuasiquoteListEvaluatorRest(list.Rest, environment).Prepend(first);
                     }
 
                     if (form.First == Constants.UnquoteSplicing)
@@ -505,7 +309,7 @@ namespace Lisp.Class
                     }
                 }
 
-                return QuasiquoteListEvaluatorRest(list.Rest, environment).Cons(list.First);
+                return QuasiquoteListEvaluatorRest(list.Rest, environment).Prepend(list.First);
             }
 
             private static IList QuasiquoteUnquoteSplicing(IList spliceList, IList form)
@@ -515,7 +319,7 @@ namespace Lisp.Class
                     return form;
                 }
 
-                return QuasiquoteUnquoteSplicing(spliceList.Rest, form).Cons(spliceList.First);
+                return QuasiquoteUnquoteSplicing(spliceList.Rest, form).Prepend(spliceList.First);
             }
         }
 
@@ -559,19 +363,6 @@ namespace Lisp.Class
             public override void Write(TextWriter textWriter)
             {
                 textWriter.Write("rest");
-            }
-        }
-
-        private class SubtractionLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                return this.EvaluateManyParameters(environment, list, (a, b) => a - b);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("-");
             }
         }
 

@@ -13,22 +13,18 @@ namespace Lisp.Class
         public Environment()
         {
             _closureEnvironment = null;
-            TopEnvironment = new TopEnvironment();
+            Math.AddSymbols(this);
+            Special.AddSymbols(this);
         }
 
         public Environment(IEnvironment closureEnvironment)
         {
             _closureEnvironment = closureEnvironment;
-            TopEnvironment = closureEnvironment.TopEnvironment;
         }
 
-        public Environment(ITopEnvironment topEnvironment)
-        {
-            _closureEnvironment = null;
-            TopEnvironment = topEnvironment;
-        }
-
-        public ITopEnvironment TopEnvironment { get; }
+        public IEnvironment TopEnvironment => _closureEnvironment == null
+            ? this
+            : _closureEnvironment.TopEnvironment;
 
         public void AddSymbol(string name, ISExpression sExpression)
         {
@@ -42,12 +38,7 @@ namespace Lisp.Class
                 return true;
             }
 
-            if (_closureEnvironment != null && _closureEnvironment.TryGetSymbol(name, out sExpression))
-            {
-                return true;
-            }
-
-            return TopEnvironment != null && TopEnvironment.TryGetSymbol(name, out sExpression);
+            return _closureEnvironment != null && _closureEnvironment.TryGetSymbol(name, out sExpression);
         }
     }
 }

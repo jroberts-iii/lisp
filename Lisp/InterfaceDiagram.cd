@@ -3,7 +3,7 @@
   <Interface Name="Lisp.Interface.IValue" Collapsed="true">
     <Position X="8.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IValue.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -31,21 +31,21 @@
   <Interface Name="Lisp.Interface.ILambda" Collapsed="true">
     <Position X="1.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAABAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\ILambda.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IList" Collapsed="true">
     <Position X="10.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAAAAAAAQAAAAAAAIAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AABAAAAAAAAgAQAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IList.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IMacro" Collapsed="true">
     <Position X="2.5" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAABAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IMacro.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -57,7 +57,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IMetaData" Collapsed="true">
-    <Position X="22.25" Y="0.5" Width="1.5" />
+    <Position X="9.25" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IMetaData.cs</FileName>
@@ -73,7 +73,7 @@
   <Interface Name="Lisp.Interface.ISExpression" Collapsed="true">
     <Position X="9" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Interface\ISExpression.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -94,8 +94,22 @@
   <Interface Name="Lisp.Interface.IClosure" Collapsed="true">
     <Position X="0.5" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAABAAAAAAEAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IClosure.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Lisp.Interface.IEnvironment" Collapsed="true">
+    <Position X="11.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAAAAAAAAAAAAAAABAAAAAAABAAA=</HashCode>
+      <FileName>Interface\IEnvironment.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Lisp.Interface.ITopEnvironment" Collapsed="true">
+    <Position X="11.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Interface\ITopEnvironment.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

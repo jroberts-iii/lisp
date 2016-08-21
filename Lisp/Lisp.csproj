@@ -41,11 +41,12 @@
     <Compile Include="Class\Macro.cs" />
     <Compile Include="Class\Closure.cs" />
     <Compile Include="Class\List.cs" />
+    <Compile Include="Class\Math.cs" />
     <Compile Include="Class\Reader.cs" />
     <Compile Include="Class\SExpression.cs" />
+    <Compile Include="Class\Special.cs" />
     <Compile Include="Class\StringTextReader.cs" />
     <Compile Include="Class\Symbol.cs" />
-    <Compile Include="Class\TopEnvironment.cs" />
     <Compile Include="Class\Value.cs" />
     <Compile Include="Exception\LispException.cs" />
     <Compile Include="Extension\SExpressionExtension.cs" />
@@ -58,13 +59,11 @@
     <Compile Include="Interface\IMetaData.cs" />
     <Compile Include="Interface\IName.cs" />
     <Compile Include="Interface\ILambda.cs" />
-    <Compile Include="Interface\INative.cs" />
     <Compile Include="Interface\ITextReader.cs" />
     <Compile Include="Interface\IList.cs" />
     <Compile Include="Interface\ISExpression.cs" />
     <Compile Include="Interface\ISymbol.cs" />
     <Compile Include="Interface\ICollection.cs" />
-    <Compile Include="Interface\ITopEnvironment.cs" />
     <Compile Include="Interface\IValue.cs" />
     <Compile Include="Interface\IVector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

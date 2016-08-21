@@ -8,6 +8,6 @@ namespace Lisp.Interface
         bool IsEmpty { get; }
         IList Rest { get; }
 
-        IList Cons(ISExpression sExpression);
+        IList Prepend(ISExpression sExpression);
     }
 }

@@ -149,7 +149,7 @@ namespace Lisp.Class
 
                 default:
                     var first = Read(textReader);
-                    return ListReaderRest(textReader).Cons(first);
+                    return ListReaderRest(textReader).Prepend(first);
             }
         }
 
@@ -163,7 +163,7 @@ namespace Lisp.Class
             var nextChar = textReader.Read();
             Trace.Assert(nextChar == '`');
 
-            return Constants.EmptyList.Cons(Read(textReader)).Cons(Constants.Quasiquote);
+            return Constants.EmptyList.Prepend(Read(textReader)).Prepend(Constants.Quasiquote);
         }
 
         private static ISExpression QuoteReader(ITextReader textReader)
@@ -171,7 +171,7 @@ namespace Lisp.Class
             var nextChar = textReader.Read();
             Trace.Assert(nextChar == '\'');
 
-            return Constants.EmptyList.Cons(Read(textReader)).Cons(Constants.Quote);
+            return Constants.EmptyList.Prepend(Read(textReader)).Prepend(Constants.Quote);
         }
 
         private static void ReadWhiteSpace(this ITextReader @this)
@@ -246,11 +246,11 @@ namespace Lisp.Class
 
             if (textReader.Peek() != '@')
             {
-                return Constants.EmptyList.Cons(Read(textReader)).Cons(Constants.Unquote);
+                return Constants.EmptyList.Prepend(Read(textReader)).Prepend(Constants.Unquote);
             }
 
             textReader.Read();
-            return Constants.EmptyList.Cons(Read(textReader)).Cons(Constants.UnquoteSplicing);
+            return Constants.EmptyList.Prepend(Read(textReader)).Prepend(Constants.UnquoteSplicing);
         }
 
         private delegate ISExpression SExpressionReader(ITextReader textReader);

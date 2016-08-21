@@ -30,11 +30,6 @@ namespace Lisp.Class
         public bool IsEmpty { get; }
         public IList Rest { get; }
 
-        public IList Cons(ISExpression sExpression)
-        {
-            return new List(sExpression, this);
-        }
-
         public override ISExpression Evaluate(IEnvironment environment)
         {
             if (IsEmpty)
@@ -59,6 +54,11 @@ namespace Lisp.Class
         public IEnumerator<ISExpression> GetEnumerator()
         {
             return new Enumerator(this);
+        }
+
+        public IList Prepend(ISExpression sExpression)
+        {
+            return new List(sExpression, this);
         }
 
         public IList ToList()
