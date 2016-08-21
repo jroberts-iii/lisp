@@ -14,7 +14,9 @@ namespace Lisp.Class
 
         public char Peek()
         {
-            return _currentOffset < _value.Length ? _value[_currentOffset] : '\0';
+            return _currentOffset < _value.Length
+                ? _value[_currentOffset]
+                : '\0';
         }
 
         public char Read()

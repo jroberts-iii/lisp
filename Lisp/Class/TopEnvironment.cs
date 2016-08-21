@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Lisp.Exception;
+using Lisp.Extension;
 using Lisp.Interface;
 
 namespace Lisp.Class
@@ -14,35 +14,32 @@ namespace Lisp.Class
         public TopEnvironment()
         {
             AddLambda(new AdditionLambda());
+            AddLambda(new BitwiseAndLambda());
+            AddLambda(new BitwiseOrLambda());
+            AddLambda(new BitwiseXorLambda());
             AddLambda(new ClosureLambda());
             AddLambda(new CondLambda());
             AddLambda(new DefineLambda());
+            AddLambda(new DivisionLambda());
+            AddLambda(new EqualLambda());
             AddLambda(new EvaluateLambda());
             AddLambda(new FirstLambda());
+            AddLambda(new GreaterThanLambda());
+            AddLambda(new GreaterThanOrEqualLambda());
+            AddLambda(new LessThanLambda());
+            AddLambda(new LessThanOrEqualLambda());
             AddLambda(new ListLambda());
+            AddLambda(new LogicalAndLambda());
+            AddLambda(new LogicalOrLambda());
             AddLambda(new MacroLambda());
+            AddLambda(new MultiplicationLambda());
             AddLambda(new PrependLambda());
             AddLambda(new QuasiquoteLambda());
             AddLambda(new QuoteLambda());
             AddLambda(new RestLambda());
+            AddLambda(new SubtractionLambda());
             AddLambda(new UnquoteLambda());
             AddLambda(new UnquoteSplicingLambda());
-
-            /*
-                {"&", Constants.OpBitwiseAnd},
-                {"|", Constants.OpBitwiseOr},
-                {"^", Constants.OpBitwiseXor},
-                {"=", Constants.OpEqual},
-                {">", Constants.OpGreaterThan},
-                {">=", Constants.OpGreaterThanOrEqual},
-                {"<", Constants.OpLessThan},
-                {"<=", Constants.OpLessThanOrEqual},
-                {"&&", Constants.OpLogicalAnd},
-                {"||", Constants.OpLogicalOr},
-                {"^^", Constants.OpLogicalXor},
-                {"*", Constants.OpMultiplication},
-                {"-", Constants.OpSubtraction}
-            */
         }
 
         public void AddSymbol(string name, ISExpression sExpression)
@@ -63,395 +60,545 @@ namespace Lisp.Class
                 AddSymbol(stringWriter.ToString(), lambda);
             }
         }
-    }
 
-    internal class AdditionLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
+        private class AdditionLambda : SExpression, ILambda
         {
-            if (list.Rest.IsEmpty)
+            public ISExpression Evaluate(IEnvironment environment, IList list)
             {
-                throw new LispException("Expected (+ value*)");
+                return this.EvaluateManyParameters(environment, list, (a, b) => a + b);
             }
 
-            var sum = list.Rest.OfType<IValue>()
-                .Aggregate<IValue, object>(null, (current, value) => Operation(current ?? 0, value.Val));
-            return new Value(sum);
-        }
-
-        public static object Operation(dynamic a, dynamic b)
-        {
-            return a + b;
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("+");
-        }
-    }
-
-    internal class ClosureLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
+            public override void Write(TextWriter textWriter)
             {
-                throw new LispException("Expected (lambda parameterList body)");
+                textWriter.Write("+");
+            }
+        }
+
+        private class BitwiseAndLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateManyParameters(environment, list, (a, b) => a & b);
             }
 
-            var parameterList = list.Rest.First as IList;
-            if (parameterList == null)
+            public override void Write(TextWriter textWriter)
             {
-                throw new LispException("Expected (lambda parameterList body). ParameterList is not a list.");
+                textWriter.Write("&");
+            }
+        }
+
+        private class BitwiseOrLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateManyParameters(environment, list, (a, b) => a | b);
             }
 
-            var parameterSymbols = new List<ISymbol>();
-            foreach (var sExpression in parameterList)
+            public override void Write(TextWriter textWriter)
             {
-                var symbol = sExpression as ISymbol;
-                if (symbol == null)
+                textWriter.Write("|");
+            }
+        }
+
+        private class BitwiseXorLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateManyParameters(environment, list, (a, b) => a ^ b);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("^");
+            }
+        }
+
+        private class ClosureLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
                 {
-                    throw new LispException("Expected (lambda parameterList body). ParameterList not a list of symbols.");
+                    throw new LispException("Expected (lambda parameterList body)");
                 }
 
-                parameterSymbols.Add(symbol);
+                var parameterList = list.Rest.First as IList;
+                if (parameterList == null)
+                {
+                    throw new LispException("Expected (lambda parameterList body). ParameterList is not a list.");
+                }
+
+                var parameterSymbols = new List<ISymbol>();
+                foreach (var sExpression in parameterList)
+                {
+                    var symbol = sExpression as ISymbol;
+                    if (symbol == null)
+                    {
+                        throw new LispException(
+                            "Expected (lambda parameterList body). ParameterList not a list of symbols.");
+                    }
+
+                    parameterSymbols.Add(symbol);
+                }
+
+                return new Closure(list.Rest.Rest.First, environment, parameterSymbols);
             }
 
-            return new Closure(list.Rest.Rest.First, environment, parameterSymbols);
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("closure");
-        }
-    }
-
-    internal class CondLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            if (list.Rest.IsEmpty)
+            public override void Write(TextWriter textWriter)
             {
+                textWriter.Write("closure");
+            }
+        }
+
+        private class CondLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.IsEmpty)
+                {
+                    return null;
+                }
+
+                foreach (var sExpression in list.Rest)
+                {
+                    var condition = sExpression as IList;
+                    if (condition == null)
+                    {
+                        throw new LispException("Expected (cond (condition result)*).  Condition must be a list.");
+                    }
+
+                    var conditional = Evaluate(environment, condition.First);
+                    if (conditional.IsTrue())
+                    {
+                        return Evaluate(environment, condition.Rest.First);
+                    }
+                }
+
                 return null;
             }
 
-            foreach (var sExpression in list.Rest)
+            public override void Write(TextWriter textWriter)
             {
-                var condition = sExpression as IList;
-                if (condition == null)
+                textWriter.Write("cond");
+            }
+        }
+
+        private class DefineLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
                 {
-                    throw new LispException("Expected (cond (condition result)*).  Condition must be a list.");
+                    throw new LispException("Expected (define symbol form)");
                 }
 
-                var conditional = Evaluate(environment, condition.First);
-                if (IsTrue(conditional))
-                {
-                    return Evaluate(environment, condition.Rest.First);
-                }
-            }
-
-            return null;
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("cond");
-        }
-
-        private static bool IsTrue(ISExpression sExpression)
-        {
-            var value = sExpression as IValue;
-            if (value?.Val is bool)
-            {
-                return (bool) value.Val;
-            }
-
-            return sExpression != null;
-        }
-    }
-
-    internal class DefineLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
-            {
-                throw new LispException("Expected (define symbol form)");
-            }
-
-            var symbol = list.Rest.First as ISymbol;
-            if (symbol == null)
-            {
-                throw new LispException("Expected (define symbol form).  Symbol is not a symbol.");
-            }
-
-            var sExpression = Evaluate(environment, list.Rest.Rest.First);
-            environment.TopEnvironment.AddSymbol(symbol.Name, sExpression);
-            return sExpression;
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("define");
-        }
-    }
-
-    internal class EvaluateLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
-            {
-                throw new LispException("Expected (evaluate form)");
-            }
-
-            var sExpression = Evaluate(environment, list.Rest.First);
-            return Evaluate(environment, sExpression);
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("evaluate");
-        }
-    }
-
-    internal class FirstLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
-            {
-                throw new LispException("Expected (first collection)");
-            }
-
-            var sExpression = Evaluate(environment, list.Rest.First);
-            var collection = sExpression as ICollection;
-            if (collection == null)
-            {
-                throw new LispException("Expected (first collection). Collection is not a collection.");
-            }
-
-            return collection.ToList().First;
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("first");
-        }
-    }
-
-    internal class ListLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            return ListListEvaluatorRest(list.Rest, environment);
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("list");
-        }
-
-        private static IList ListListEvaluatorRest(IList list, IEnvironment environment)
-        {
-            if (list.IsEmpty)
-            {
-                return Constants.EmptyList;
-            }
-
-            var first = Evaluate(environment, list.First);
-            return ListListEvaluatorRest(list.Rest, environment).Cons(first);
-        }
-    }
-
-    internal class MacroLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
-            {
-                throw new LispException("Expected (macro parameterList body)");
-            }
-
-            var parameterList = list.Rest.First as IList;
-            if (parameterList == null)
-            {
-                throw new LispException("Expected (macro parameterList body). ParameterList is not a list.");
-            }
-
-            var parameterSymbols = new List<ISymbol>();
-            foreach (var sExpression in parameterList)
-            {
-                var symbol = sExpression as ISymbol;
+                var symbol = list.Rest.First as ISymbol;
                 if (symbol == null)
                 {
-                    throw new LispException("Expected (macro parameterList body). ParameterList not a list of symbols.");
+                    throw new LispException("Expected (define symbol form).  Symbol is not a symbol.");
                 }
 
-                parameterSymbols.Add(symbol);
+                var sExpression = Evaluate(environment, list.Rest.Rest.First);
+                environment.TopEnvironment.AddSymbol(symbol.Name, sExpression);
+                return sExpression;
             }
 
-            return new Macro(list.Rest.Rest.First, parameterSymbols);
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("macro");
-        }
-    }
-
-    internal class PrependLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
+            public override void Write(TextWriter textWriter)
             {
-                throw new LispException("Expected (prepend form list)");
+                textWriter.Write("define");
+            }
+        }
+
+        private class DivisionLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateManyParameters(environment, list, (a, b) => a/b);
             }
 
-            var consList = list.Rest.First as IList;
-            if (consList == null)
+            public override void Write(TextWriter textWriter)
             {
-                throw new LispException("Expected (prepend form list).  List is not a list.");
+                textWriter.Write("/");
+            }
+        }
+
+        private class EqualLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateTwoParameters(environment, list, (a, b) => a == b);
             }
 
-            return consList.Cons(list.First);
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("prepend");
-        }
-    }
-
-    internal class QuasiquoteLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
+            public override void Write(TextWriter textWriter)
             {
-                throw new LispException("Expected (quasiquote form)");
+                textWriter.Write("=");
             }
-
-            var formList = list.Rest.First as IList;
-            return formList == null ? list.Rest.First : QuasiquoteListEvaluatorRest(formList, environment);
         }
 
-        public override void Write(TextWriter textWriter)
+        private class EvaluateLambda : SExpression, ILambda
         {
-            textWriter.Write("quasiquote");
-        }
-
-        private static IList QuasiquoteListEvaluatorRest(IList list, IEnvironment environment)
-        {
-            if (list.IsEmpty)
+            public ISExpression Evaluate(IEnvironment environment, IList list)
             {
-                return Constants.EmptyList;
-            }
-
-            var form = list.First as IList;
-            if (form != null)
-            {
-                if (form.First == Constants.Unquote)
+                if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
                 {
-                    var first = Evaluate(environment, form.Rest.First);
-                    return QuasiquoteListEvaluatorRest(list.Rest, environment).Cons(first);
+                    throw new LispException("Expected (evaluate form)");
                 }
 
-                if (form.First == Constants.UnquoteSplicing)
+                var sExpression = Evaluate(environment, list.Rest.First);
+                return Evaluate(environment, sExpression);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("evaluate");
+            }
+        }
+
+        private class FirstLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
                 {
-                    var first = Evaluate(environment, form.Rest.First);
-                    var splicingList = first as IList;
-                    if (splicingList == null)
+                    throw new LispException("Expected (first collection)");
+                }
+
+                var sExpression = Evaluate(environment, list.Rest.First);
+                var collection = sExpression as ICollection;
+                if (collection == null)
+                {
+                    throw new LispException("Expected (first collection). Collection is not a collection.");
+                }
+
+                return collection.ToList().First;
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("first");
+            }
+        }
+
+        private class GreaterThanLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateTwoParameters(environment, list, (a, b) => a > b);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write(">");
+            }
+        }
+
+        private class GreaterThanOrEqualLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateTwoParameters(environment, list, (a, b) => a >= b);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write(">=");
+            }
+        }
+
+        private class LessThanLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateTwoParameters(environment, list, (a, b) => a < b);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("<");
+            }
+        }
+
+        private class LessThanOrEqualLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateTwoParameters(environment, list, (a, b) => a <= b);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("<=");
+            }
+        }
+
+        private class ListLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return ListListEvaluatorRest(list.Rest, environment);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("list");
+            }
+
+            private static IList ListListEvaluatorRest(IList list, IEnvironment environment)
+            {
+                if (list.IsEmpty)
+                {
+                    return Constants.EmptyList;
+                }
+
+                var first = Evaluate(environment, list.First);
+                return ListListEvaluatorRest(list.Rest, environment).Cons(first);
+            }
+        }
+
+        private class LogicalAndLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateManyParametersBoolean(environment, list, (a, b) => a && b);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("&&");
+            }
+        }
+
+        private class LogicalOrLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateManyParametersBoolean(environment, list, (a, b) => a || b);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("||");
+            }
+        }
+
+        private class MacroLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
+                {
+                    throw new LispException("Expected (macro parameterList body)");
+                }
+
+                var parameterList = list.Rest.First as IList;
+                if (parameterList == null)
+                {
+                    throw new LispException("Expected (macro parameterList body). ParameterList is not a list.");
+                }
+
+                var parameterSymbols = new List<ISymbol>();
+                foreach (var sExpression in parameterList)
+                {
+                    var symbol = sExpression as ISymbol;
+                    if (symbol == null)
                     {
-                        throw new LispException("Expected (unquote-splicing list)");
+                        throw new LispException(
+                            "Expected (macro parameterList body). ParameterList not a list of symbols.");
                     }
 
-                    form = QuasiquoteListEvaluatorRest(list.Rest, environment);
-                    return QuasiquoteUnquoteSplicing(splicingList, form);
+                    parameterSymbols.Add(symbol);
                 }
+
+                return new Macro(list.Rest.Rest.First, parameterSymbols);
             }
 
-            return QuasiquoteListEvaluatorRest(list.Rest, environment).Cons(list.First);
-        }
-
-        private static IList QuasiquoteUnquoteSplicing(IList spliceList, IList form)
-        {
-            if (spliceList.IsEmpty)
+            public override void Write(TextWriter textWriter)
             {
-                return form;
+                textWriter.Write("macro");
             }
-
-            return QuasiquoteUnquoteSplicing(spliceList.Rest, form).Cons(spliceList.First);
         }
-    }
 
-    internal class QuoteLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
+        private class MultiplicationLambda : SExpression, ILambda
         {
-            if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
+            public ISExpression Evaluate(IEnvironment environment, IList list)
             {
-                throw new LispException("Expected (quote form)");
+                return this.EvaluateManyParameters(environment, list, (a, b) => a*b);
             }
 
-            return list.Rest.First;
-        }
-
-        public override void Write(TextWriter textWriter)
-        {
-            textWriter.Write("quote");
-        }
-    }
-
-    internal class RestLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
+            public override void Write(TextWriter textWriter)
             {
-                throw new LispException("Expected (rest collection)");
+                textWriter.Write("*");
             }
+        }
 
-            var sExpression = Evaluate(environment, list.Rest.First);
-            var collection = sExpression as ICollection;
-            if (collection == null)
+        private class PrependLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
             {
-                throw new LispException("Expected (rest collection).  Collection is not a collection.");
+                if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
+                {
+                    throw new LispException("Expected (prepend form list)");
+                }
+
+                var consList = list.Rest.First as IList;
+                if (consList == null)
+                {
+                    throw new LispException("Expected (prepend form list).  List is not a list.");
+                }
+
+                return consList.Cons(list.First);
             }
 
-            return collection.ToList().Rest;
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("prepend");
+            }
         }
 
-        public override void Write(TextWriter textWriter)
+        private class QuasiquoteLambda : SExpression, ILambda
         {
-            textWriter.Write("rest");
-        }
-    }
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
+                {
+                    throw new LispException("Expected (quasiquote form)");
+                }
 
-    internal class UnquoteLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            throw new LispException("Unquote can only appear in a quasiquote.");
+                var formList = list.Rest.First as IList;
+                return formList == null
+                    ? list.Rest.First
+                    : QuasiquoteListEvaluatorRest(formList, environment);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("quasiquote");
+            }
+
+            private static IList QuasiquoteListEvaluatorRest(IList list, IEnvironment environment)
+            {
+                if (list.IsEmpty)
+                {
+                    return Constants.EmptyList;
+                }
+
+                var form = list.First as IList;
+                if (form != null)
+                {
+                    if (form.First == Constants.Unquote)
+                    {
+                        var first = Evaluate(environment, form.Rest.First);
+                        return QuasiquoteListEvaluatorRest(list.Rest, environment).Cons(first);
+                    }
+
+                    if (form.First == Constants.UnquoteSplicing)
+                    {
+                        var first = Evaluate(environment, form.Rest.First);
+                        var splicingList = first as IList;
+                        if (splicingList == null)
+                        {
+                            throw new LispException("Expected (unquote-splicing list)");
+                        }
+
+                        form = QuasiquoteListEvaluatorRest(list.Rest, environment);
+                        return QuasiquoteUnquoteSplicing(splicingList, form);
+                    }
+                }
+
+                return QuasiquoteListEvaluatorRest(list.Rest, environment).Cons(list.First);
+            }
+
+            private static IList QuasiquoteUnquoteSplicing(IList spliceList, IList form)
+            {
+                if (spliceList.IsEmpty)
+                {
+                    return form;
+                }
+
+                return QuasiquoteUnquoteSplicing(spliceList.Rest, form).Cons(spliceList.First);
+            }
         }
 
-        public override void Write(TextWriter textWriter)
+        private class QuoteLambda : SExpression, ILambda
         {
-            textWriter.Write("unquote");
-        }
-    }
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
+                {
+                    throw new LispException("Expected (quote form)");
+                }
 
-    internal class UnquoteSplicingLambda : SExpression, ILambda
-    {
-        public ISExpression Evaluate(IEnvironment environment, IList list)
-        {
-            throw new LispException("Unquote-splicing can only appear in a quasiquote.");
+                return list.Rest.First;
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("quote");
+            }
         }
 
-        public override void Write(TextWriter textWriter)
+        private class RestLambda : SExpression, ILambda
         {
-            textWriter.Write("unquote-splicing");
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
+                {
+                    throw new LispException("Expected (rest collection)");
+                }
+
+                var sExpression = Evaluate(environment, list.Rest.First);
+                var collection = sExpression as ICollection;
+                if (collection == null)
+                {
+                    throw new LispException("Expected (rest collection).  Collection is not a collection.");
+                }
+
+                return collection.ToList().Rest;
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("rest");
+            }
+        }
+
+        private class SubtractionLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateManyParameters(environment, list, (a, b) => a - b);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("-");
+            }
+        }
+
+        private class UnquoteLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                throw new LispException("Unquote can only appear in a quasiquote.");
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("unquote");
+            }
+        }
+
+        private class UnquoteSplicingLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                throw new LispException("Unquote-splicing can only appear in a quasiquote.");
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("unquote-splicing");
+            }
         }
     }
 }

@@ -16,7 +16,9 @@ namespace Lisp.Class
         {
             if (Val is bool)
             {
-                textWriter.Write((bool) Val ? "true" : "false");
+                textWriter.Write((bool) Val
+                    ? "true"
+                    : "false");
                 return;
             }
 

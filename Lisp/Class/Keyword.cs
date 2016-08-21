@@ -15,7 +15,10 @@ namespace Lisp.Class
             Namespace = ns;
         }
 
-        public string FullName => string.IsNullOrEmpty(Namespace) ? Name : $"{Namespace}.{Name}";
+        public string FullName => string.IsNullOrEmpty(Namespace)
+            ? Name
+            : $"{Namespace}.{Name}";
+
         public string Name { get; }
         public string Namespace { get; }
 

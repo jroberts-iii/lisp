@@ -48,6 +48,7 @@
     <Compile Include="Class\TopEnvironment.cs" />
     <Compile Include="Class\Value.cs" />
     <Compile Include="Exception\LispException.cs" />
+    <Compile Include="Extension\SExpressionExtension.cs" />
     <Compile Include="Interface\IAtom.cs" />
     <Compile Include="Interface\IEnvironment.cs" />
     <Compile Include="Interface\IKeyword.cs" />
