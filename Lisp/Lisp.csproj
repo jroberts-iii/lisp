@@ -41,10 +41,10 @@
     <Compile Include="Class\Macro.cs" />
     <Compile Include="Class\Closure.cs" />
     <Compile Include="Class\List.cs" />
-    <Compile Include="Class\Math.cs" />
+    <Compile Include="Class\MathSymbols.cs" />
     <Compile Include="Class\Reader.cs" />
     <Compile Include="Class\SExpression.cs" />
-    <Compile Include="Class\Special.cs" />
+    <Compile Include="Class\SpecialSymbols.cs" />
     <Compile Include="Class\StringTextReader.cs" />
     <Compile Include="Class\Symbol.cs" />
     <Compile Include="Class\Value.cs" />
@@ -56,7 +56,6 @@
     <Compile Include="Interface\IMacro.cs" />
     <Compile Include="Interface\IClosure.cs" />
     <Compile Include="Interface\IMap.cs" />
-    <Compile Include="Interface\IMetaData.cs" />
     <Compile Include="Interface\IName.cs" />
     <Compile Include="Interface\ILambda.cs" />
     <Compile Include="Interface\ITextReader.cs" />

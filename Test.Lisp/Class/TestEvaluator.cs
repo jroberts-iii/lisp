@@ -79,6 +79,20 @@ namespace Test.Lisp.Class
         }
 
         [Test]
+        public void Evaluate_EmptyFalse_Successful()
+        {
+            var environment = new Environment();
+            Check("(empty? (list 1))", "false", environment);
+        }
+
+        [Test]
+        public void Evaluate_EmptyTrue_Successful()
+        {
+            var environment = new Environment();
+            Check("(empty? ())", "true", environment);
+        }
+
+        [Test]
         public void Evaluate_FirstA_Successful()
         {
             var environment = new Environment();

@@ -4,7 +4,7 @@ using Lisp.Interface;
 
 namespace Lisp.Class
 {
-    public static class Math
+    public static class MathSymbols
     {
         public static void AddSymbols(IEnvironment environment)
         {

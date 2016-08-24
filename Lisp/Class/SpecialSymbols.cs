@@ -6,13 +6,14 @@ using Lisp.Interface;
 
 namespace Lisp.Class
 {
-    public static class Special
+    public static class SpecialSymbols
     {
         public static void AddSymbols(IEnvironment environment)
         {
             AddLambda(environment, new ClosureLambda());
             AddLambda(environment, new CondLambda());
             AddLambda(environment, new DefineLambda());
+            AddLambda(environment, new EmptyLambda());
             AddLambda(environment, new EvaluateLambda());
             AddLambda(environment, new FirstLambda());
             AddLambda(environment, new ListLambda());
@@ -127,6 +128,31 @@ namespace Lisp.Class
             public override void Write(TextWriter textWriter)
             {
                 textWriter.Write("define");
+            }
+        }
+
+        private class EmptyLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.IsEmpty || !list.Rest.Rest.IsEmpty)
+                {
+                    throw new LispException("Expected (empty? collection)");
+                }
+
+                var sExpression = Evaluate(environment, list.Rest.First);
+                var collection = sExpression as ICollection;
+                if (collection == null)
+                {
+                    throw new LispException("Expected (empty collection). Collection is not a collection.");
+                }
+
+                return new Value(collection.ToList().IsEmpty);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("empty?");
             }
         }
 

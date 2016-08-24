@@ -62,6 +62,12 @@ namespace Test.Lisp.Class
         }
 
         [Test]
+        public void Read_Empty_Successful()
+        {
+            Check("(empty? ())", "(empty? ())");
+        }
+
+        [Test]
         public void Read_FirstA_Successful()
         {
             Check("(first 'a)", "(first (quote a))");

@@ -13,8 +13,8 @@ namespace Lisp.Class
         public Environment()
         {
             _closureEnvironment = null;
-            Math.AddSymbols(this);
-            Special.AddSymbols(this);
+            MathSymbols.AddSymbols(this);
+            SpecialSymbols.AddSymbols(this);
         }
 
         public Environment(IEnvironment closureEnvironment)

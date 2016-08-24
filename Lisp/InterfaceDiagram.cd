@@ -56,13 +56,6 @@
       <FileName>Interface\IMap.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Lisp.Interface.IMetaData" Collapsed="true">
-    <Position X="9.25" Y="5.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
-      <FileName>Interface\IMetaData.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
   <Interface Name="Lisp.Interface.IName" Collapsed="true">
     <Position X="5.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
@@ -99,17 +92,10 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IEnvironment" Collapsed="true">
-    <Position X="11.25" Y="5.25" Width="1.5" />
+    <Position X="10.5" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAgAAAAAAAAAAAAAAAAAAAABAAAAAAABAAA=</HashCode>
       <FileName>Interface\IEnvironment.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Lisp.Interface.ITopEnvironment" Collapsed="true">
-    <Position X="11.25" Y="6" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
-      <FileName>Interface\ITopEnvironment.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
