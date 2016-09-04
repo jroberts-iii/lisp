@@ -4,9 +4,9 @@ using Lisp.Interface;
 
 namespace Lisp.Class
 {
-    public class Closure : SExpression, IClosure
+    public class Function : SExpression, IFunction
     {
-        public Closure(ISExpression body, IEnvironment closureEnvironment, IEnumerable<ISymbol> parameterSymbols)
+        public Function(ISExpression body, IEnvironment closureEnvironment, IEnumerable<ISymbol> parameterSymbols)
         {
             Body = body;
             ClosureEnvironment = closureEnvironment;
@@ -33,7 +33,7 @@ namespace Lisp.Class
 
         public override void Write(TextWriter textWriter)
         {
-            textWriter.Write("<closure>");
+            textWriter.Write("<function>");
         }
     }
 }

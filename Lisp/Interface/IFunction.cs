@@ -2,7 +2,7 @@
 
 namespace Lisp.Interface
 {
-    public interface IClosure : ILambda
+    public interface IFunction : ILambda
     {
         ISExpression Body { get; }
         IEnvironment ClosureEnvironment { get; }

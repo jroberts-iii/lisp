@@ -32,7 +32,7 @@ namespace Lisp.Class
 
         public override void Write(TextWriter textWriter)
         {
-            textWriter.Write("<lambda>");
+            textWriter.Write("<macro>");
         }
     }
 }

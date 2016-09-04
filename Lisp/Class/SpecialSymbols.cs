@@ -10,18 +10,27 @@ namespace Lisp.Class
     {
         public static void AddSymbols(IEnvironment environment)
         {
-            AddLambda(environment, new ClosureLambda());
+            //
             AddLambda(environment, new CondLambda());
             AddLambda(environment, new DefineLambda());
             AddLambda(environment, new EmptyLambda());
             AddLambda(environment, new EvaluateLambda());
+            //let
+            //progn
+
+            // Functions
+            AddLambda(environment, new FunctionLambda());
+
+            // List
             AddLambda(environment, new FirstLambda());
             AddLambda(environment, new ListLambda());
-            AddLambda(environment, new MacroLambda());
             AddLambda(environment, new PrependLambda());
+            AddLambda(environment, new RestLambda());
+
+            // Macros
+            AddLambda(environment, new MacroLambda());
             AddLambda(environment, new QuasiquoteLambda());
             AddLambda(environment, new QuoteLambda());
-            AddLambda(environment, new RestLambda());
             AddLambda(environment, new UnquoteLambda());
             AddLambda(environment, new UnquoteSplicingLambda());
         }
@@ -32,43 +41,6 @@ namespace Lisp.Class
             {
                 lambda.Write(stringWriter);
                 environment.AddSymbol(stringWriter.ToString(), lambda);
-            }
-        }
-
-        private class ClosureLambda : SExpression, ILambda
-        {
-            public ISExpression Evaluate(IEnvironment environment, IList list)
-            {
-                if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
-                {
-                    throw new LispException("Expected (lambda parameterList body)");
-                }
-
-                var parameterList = list.Rest.First as IList;
-                if (parameterList == null)
-                {
-                    throw new LispException("Expected (lambda parameterList body). ParameterList is not a list.");
-                }
-
-                var parameterSymbols = new List<ISymbol>();
-                foreach (var sExpression in parameterList)
-                {
-                    var symbol = sExpression as ISymbol;
-                    if (symbol == null)
-                    {
-                        throw new LispException(
-                            "Expected (lambda parameterList body). ParameterList not a list of symbols.");
-                    }
-
-                    parameterSymbols.Add(symbol);
-                }
-
-                return new Closure(list.Rest.Rest.First, environment, parameterSymbols);
-            }
-
-            public override void Write(TextWriter textWriter)
-            {
-                textWriter.Write("closure");
             }
         }
 
@@ -197,6 +169,43 @@ namespace Lisp.Class
             public override void Write(TextWriter textWriter)
             {
                 textWriter.Write("first");
+            }
+        }
+
+        private class FunctionLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                if (list.Rest.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
+                {
+                    throw new LispException("Expected (function parameterList body)");
+                }
+
+                var parameterList = list.Rest.First as IList;
+                if (parameterList == null)
+                {
+                    throw new LispException("Expected (function parameterList body). ParameterList is not a list.");
+                }
+
+                var parameterSymbols = new List<ISymbol>();
+                foreach (var sExpression in parameterList)
+                {
+                    var symbol = sExpression as ISymbol;
+                    if (symbol == null)
+                    {
+                        throw new LispException(
+                            "Expected (function parameterList body). ParameterList not a list of symbols.");
+                    }
+
+                    parameterSymbols.Add(symbol);
+                }
+
+                return new Function(list.Rest.Rest.First, environment, parameterSymbols);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("function");
             }
         }
 

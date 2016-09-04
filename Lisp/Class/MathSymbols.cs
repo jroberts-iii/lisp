@@ -21,6 +21,7 @@ namespace Lisp.Class
             AddLambda(environment, new LogicalAndLambda());
             AddLambda(environment, new LogicalOrLambda());
             AddLambda(environment, new MultiplicationLambda());
+            AddLambda(environment, new NotEqualLambda());
             AddLambda(environment, new SubtractionLambda());
         }
 
@@ -199,6 +200,19 @@ namespace Lisp.Class
             public override void Write(TextWriter textWriter)
             {
                 textWriter.Write("*");
+            }
+        }
+
+        private class NotEqualLambda : SExpression, ILambda
+        {
+            public ISExpression Evaluate(IEnvironment environment, IList list)
+            {
+                return this.EvaluateTwoParameters(environment, list, (a, b) => a != b);
+            }
+
+            public override void Write(TextWriter textWriter)
+            {
+                textWriter.Write("!=");
             }
         }
 

@@ -39,7 +39,7 @@
     <Compile Include="Class\Environment.cs" />
     <Compile Include="Class\Keyword.cs" />
     <Compile Include="Class\Macro.cs" />
-    <Compile Include="Class\Closure.cs" />
+    <Compile Include="Class\Function.cs" />
     <Compile Include="Class\List.cs" />
     <Compile Include="Class\MathSymbols.cs" />
     <Compile Include="Class\Reader.cs" />
@@ -54,7 +54,7 @@
     <Compile Include="Interface\IEnvironment.cs" />
     <Compile Include="Interface\IKeyword.cs" />
     <Compile Include="Interface\IMacro.cs" />
-    <Compile Include="Interface\IClosure.cs" />
+    <Compile Include="Interface\IFunction.cs" />
     <Compile Include="Interface\IMap.cs" />
     <Compile Include="Interface\IName.cs" />
     <Compile Include="Interface\ILambda.cs" />

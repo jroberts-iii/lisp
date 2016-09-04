@@ -38,7 +38,7 @@ namespace Lisp.Class
                 return true;
             }
 
-            return _closureEnvironment != null && _closureEnvironment.TryGetSymbol(name, out sExpression);
+            return (_closureEnvironment != null) && _closureEnvironment.TryGetSymbol(name, out sExpression);
         }
     }
 }
