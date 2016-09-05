@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace Lisp.Interface
+﻿namespace Lisp.Interface
 {
-    public interface IMacro : ILambda
+    public interface IMacro : IAtom
     {
         ISExpression Body { get; }
-        IEnumerable<ISymbol> ParameterSymbols { get; }
+        string[] ParameterNames { get; }
+        ISExpression Evaluate(IEnvironment environment, IList list);
     }
 }

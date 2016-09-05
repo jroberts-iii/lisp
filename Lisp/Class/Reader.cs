@@ -71,7 +71,7 @@ namespace Lisp.Class
                 case "false":
                     return Constants.False;
 
-                case "nil":
+                case "null":
                     return null;
 
                 case "true":

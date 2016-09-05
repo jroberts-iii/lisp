@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Lisp.Exception;
+﻿using Lisp.Exception;
 using Lisp.Interface;
 
 namespace Lisp.Class
@@ -34,9 +33,9 @@ namespace Lisp.Class
             throw new LispException($"Undefined symbol {FullName}.");
         }
 
-        public override void Write(TextWriter textWriter)
+        public override string ToString()
         {
-            textWriter.Write(FullName);
+            return FullName;
         }
     }
 }

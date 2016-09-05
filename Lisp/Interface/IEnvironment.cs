@@ -2,8 +2,11 @@
 {
     public interface IEnvironment
     {
-        IEnvironment TopEnvironment { get; }
+        IEnvironment EnclosingEnvironment { get; }
+        IEnvironment GlobalEnvironment { get; }
+        ISExpression[] Parameters { get; }
         void AddSymbol(string name, ISExpression sExpression);
+        IEnvironment Push(IEnvironment closureEnvironment, ISExpression[] parameters);
         bool TryGetSymbol(string name, out ISExpression sExpression);
     }
 }

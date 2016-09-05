@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Lisp.Interface;
+﻿using Lisp.Interface;
 
 namespace Lisp.Class
 {
@@ -22,10 +21,9 @@ namespace Lisp.Class
         public string Name { get; }
         public string Namespace { get; }
 
-        public override void Write(TextWriter textWriter)
+        public override string ToString()
         {
-            textWriter.Write(":");
-            textWriter.Write(FullName);
+            return ":" + FullName;
         }
     }
 }

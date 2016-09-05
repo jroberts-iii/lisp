@@ -8,30 +8,6 @@ namespace Test.Lisp.Class
     public class TestReaderWriter
     {
         [Test]
-        public void Evaluate_Cond1Null_Successful()
-        {
-            Check("(cond (() 1))");
-        }
-
-        [Test]
-        public void Evaluate_Cond1T_Successful()
-        {
-            Check("(cond (true 1))");
-        }
-
-        [Test]
-        public void Evaluate_Cond2T_Successful()
-        {
-            Check("(cond (() 1) (true 2))");
-        }
-
-        [Test]
-        public void Evaluate_CondEmpty_Successful()
-        {
-            Check("(cond)");
-        }
-
-        [Test]
         public void Read_A_Successful()
         {
             Check("a");

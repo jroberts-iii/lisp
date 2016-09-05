@@ -1,28 +1,27 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Lisp.Interface;
+﻿using Lisp.Interface;
 
 namespace Lisp.Class
 {
     public class Macro : SExpression, IMacro
     {
-        public Macro(ISExpression body, IEnumerable<ISymbol> parameterSymbols)
+        public Macro(ISExpression body, params string[] parameterNames)
         {
             Body = body;
-            ParameterSymbols = parameterSymbols;
+            ParameterNames = parameterNames;
         }
 
         public ISExpression Body { get; }
-        public IEnumerable<ISymbol> ParameterSymbols { get; }
+        public IEnvironment ClosureEnvironment => null;
+        public string[] ParameterNames { get; }
 
         public ISExpression Evaluate(IEnvironment environment, IList list)
         {
             var env = new Environment();
 
             list = list.Rest;
-            foreach (var parameterSymbol in ParameterSymbols)
+            foreach (var parameterName in ParameterNames)
             {
-                env.AddSymbol(parameterSymbol.Name, list.First);
+                env.AddSymbol(parameterName, list.First);
                 list = list.Rest;
             }
 
@@ -30,9 +29,9 @@ namespace Lisp.Class
             return Evaluate(environment, sExpression);
         }
 
-        public override void Write(TextWriter textWriter)
+        public override string ToString()
         {
-            textWriter.Write("<macro>");
+            return "<macro>";
         }
     }
 }

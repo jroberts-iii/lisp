@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Interface Name="Lisp.Interface.IValue" Collapsed="true">
-    <Position X="8.5" Y="2.75" Width="1.5" />
+    <Position X="7.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IValue.cs</FileName>
@@ -15,7 +15,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.ICollection" Collapsed="true">
-    <Position X="12.25" Y="1.5" Width="1.5" />
+    <Position X="11.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
       <FileName>Interface\ICollection.cs</FileName>
@@ -31,26 +31,26 @@
   <Interface Name="Lisp.Interface.ILambda" Collapsed="true">
     <Position X="1.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAIAAAAEAAAAgAAAAAAAACAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\ILambda.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IList" Collapsed="true">
-    <Position X="10.5" Y="2.75" Width="1.5" />
+    <Position X="9.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AABAAAAAAAAgAQAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IList.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IMacro" Collapsed="true">
-    <Position X="2.5" Y="4" Width="1.5" />
+    <Position X="3.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAABAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAIAAAAAAABAgAAAAAAAACAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IMacro.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IMap" Collapsed="true">
-    <Position X="12.25" Y="2.75" Width="1.5" />
+    <Position X="11.25" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Interface\IMap.cs</FileName>
@@ -64,7 +64,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.ISExpression" Collapsed="true">
-    <Position X="9" Y="0.5" Width="1.5" />
+    <Position X="8.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Interface\ISExpression.cs</FileName>
@@ -78,21 +78,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Lisp.Interface.IVector" Collapsed="true">
-    <Position X="14" Y="2.75" Width="1.5" />
+    <Position X="13" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interface\IVector.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Lisp.Interface.IClosure" Collapsed="true">
-    <Position X="0.5" Y="4" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAABAAAAAAEAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Interface\IClosure.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
   <Interface Name="Lisp.Interface.IEnvironment" Collapsed="true">
-    <Position X="10.5" Y="4" Width="1.5" />
+    <Position X="1.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAgAAAAAAAAAAAAAAAAAAAABAAAAAAABAAA=</HashCode>
       <FileName>Interface\IEnvironment.cs</FileName>

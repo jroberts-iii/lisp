@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.Text;
 using Lisp.Exception;
 using Lisp.Interface;
 using IList = Lisp.Interface.IList;
@@ -39,7 +39,7 @@ namespace Lisp.Class
 
             if (First == null)
             {
-                throw new LispException("List.Evaluate expected First to be not null.");
+                throw new LispException("List.Evaluate expected First to not be null.");
             }
 
             var lambda = Evaluate(environment, First) as ILambda;
@@ -66,21 +66,23 @@ namespace Lisp.Class
             return this;
         }
 
-        public override void Write(TextWriter textWriter)
+        public override string ToString()
         {
-            textWriter.Write("(");
+            var stringBuilder = new StringBuilder();
 
+            stringBuilder.Append("(");
             if (!IsEmpty)
             {
-                Write(textWriter, First);
+                stringBuilder.Append(First);
                 foreach (var sExpression in Rest)
                 {
-                    textWriter.Write(" ");
-                    Write(textWriter, sExpression);
+                    stringBuilder.Append(" ");
+                    stringBuilder.Append(ToString(sExpression));
                 }
             }
 
-            textWriter.Write(")");
+            stringBuilder.Append(")");
+            return stringBuilder.ToString();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

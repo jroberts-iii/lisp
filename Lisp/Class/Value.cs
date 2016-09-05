@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Lisp.Interface;
+﻿using Lisp.Interface;
 
 namespace Lisp.Class
 {
@@ -12,25 +11,21 @@ namespace Lisp.Class
 
         public object Val { get; }
 
-        public override void Write(TextWriter textWriter)
+        public override string ToString()
         {
             if (Val is bool)
             {
-                textWriter.Write((bool) Val
+                return (bool) Val
                     ? "true"
-                    : "false");
-                return;
+                    : "false";
             }
 
             if (Val is string)
             {
-                textWriter.Write("\"");
-                textWriter.Write(Val);
-                textWriter.Write("\"");
-                return;
+                return "\"" + Val + "\"";
             }
 
-            textWriter.Write(Val.ToString());
+            return Val.ToString();
         }
     }
 }

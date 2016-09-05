@@ -15,6 +15,16 @@ namespace Lisp.Class
             return sExpression?.Evaluate(environment);
         }
 
+        public virtual bool IsTrue()
+        {
+            return true;
+        }
+
+        public static string ToString(ISExpression sExpression)
+        {
+            return sExpression?.ToString() ?? "null";
+        }
+
         public virtual void Write(TextWriter textWriter)
         {
             textWriter.Write(ToString());
@@ -22,14 +32,7 @@ namespace Lisp.Class
 
         public static void Write(TextWriter textWriter, ISExpression sExpression)
         {
-            if (sExpression == null)
-            {
-                textWriter.Write("nil");
-            }
-            else
-            {
-                sExpression.Write(textWriter);
-            }
+            textWriter.Write(ToString(sExpression));
         }
     }
 }

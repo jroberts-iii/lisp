@@ -19,35 +19,7 @@ namespace Test.Lisp.Class
         public void Evaluate_Anonymous_Successful()
         {
             var environment = new Environment();
-            Check("((function (x y) (list x y)) 1 2)", "(1 2)", environment);
-        }
-
-        [Test]
-        public void Evaluate_Cond1Null_Successful()
-        {
-            var environment = new Environment();
-            Check("(cond (() 1))", "1", environment);
-        }
-
-        [Test]
-        public void Evaluate_Cond1T_Successful()
-        {
-            var environment = new Environment();
-            Check("(cond (true 1))", "1", environment);
-        }
-
-        [Test]
-        public void Evaluate_Cond2T_Successful()
-        {
-            var environment = new Environment();
-            Check("(cond (nil 1) (true 2))", "2", environment);
-        }
-
-        [Test]
-        public void Evaluate_CondEmpty_Successful()
-        {
-            var environment = new Environment();
-            Check("(cond)", "nil", environment);
+            Check("((lambda (x y) (list x y)) 1 2)", "(1 2)", environment);
         }
 
         [Test]
@@ -124,14 +96,14 @@ namespace Test.Lisp.Class
         public void Evaluate_FirstNull_Successful()
         {
             var environment = new Environment();
-            Check("(first ())", "nil", environment);
+            Check("(first ())", "null", environment);
         }
 
         [Test]
         public void Evaluate_Lambda_Successful()
         {
             var environment = new Environment();
-            Check("(function (x) x)", "<function>", environment);
+            Check("(lambda (x) x)", "<lambda>", environment);
         }
 
         [Test]
