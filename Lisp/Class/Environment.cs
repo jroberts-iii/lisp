@@ -331,7 +331,7 @@ namespace Lisp.Class
                 var formList = list.Rest.First as IList;
                 return formList == null
                     ? list.Rest.First
-                    : QuasiquoteListEvaluatorRest(formList);
+                    : QuasiquoteListEvaluatorRest(environment, formList);
             }
 
             public override string ToString()
@@ -339,7 +339,7 @@ namespace Lisp.Class
                 return "quasiquote";
             }
 
-            private static IList QuasiquoteListEvaluatorRest(IList list)
+            private static IList QuasiquoteListEvaluatorRest(IEnvironment environment, IList list)
             {
                 if (list.IsEmpty)
                 {
@@ -351,23 +351,23 @@ namespace Lisp.Class
                 {
                     if (sExpression.First == Constants.Unquote)
                     {
-                        return QuasiquoteListEvaluatorRest(list.Rest).Prepend(sExpression.Rest.First);
+                        return QuasiquoteListEvaluatorRest(environment, list.Rest).Prepend(Evaluate(environment, sExpression.Rest.First));
                     }
 
                     if (sExpression.First == Constants.UnquoteSplicing)
                     {
-                        var splicingList = sExpression.Rest.First as IList;
+                        var splicingList = Evaluate(environment, sExpression.Rest.First) as IList;
                         if (splicingList == null)
                         {
                             throw new LispException("Expected (unquote-splicing list).");
                         }
 
-                        sExpression = QuasiquoteListEvaluatorRest(list.Rest);
+                        sExpression = QuasiquoteListEvaluatorRest(environment, list.Rest);
                         return QuasiquoteUnquoteSplicing(splicingList, sExpression);
                     }
                 }
 
-                return QuasiquoteListEvaluatorRest(list.Rest).Prepend(list.First);
+                return QuasiquoteListEvaluatorRest(environment, list.Rest).Prepend(list.First);
             }
 
             private static IList QuasiquoteUnquoteSplicing(IList spliceList, IList sExpression)
