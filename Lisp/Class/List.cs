@@ -27,7 +27,7 @@ namespace Lisp.Class
         }
 
         public ISExpression First { get; }
-        public bool IsEmpty { get; }
+        public override bool IsEmpty { get; }
         public IList Rest { get; }
 
         public override ISExpression Evaluate(IEnvironment environment)
@@ -61,7 +61,7 @@ namespace Lisp.Class
             return new List(sExpression, this);
         }
 
-        public IList ToList()
+        public override IList ToList()
         {
             return this;
         }

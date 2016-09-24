@@ -98,6 +98,36 @@ namespace Test.Lisp.Class
         }
 
         [Test]
+        public void Read_Quasiquote1_Successful()
+        {
+            Check("`(a (+ 1 2) c)", "(quasiquote (a (+ 1 2) c))");
+        }
+
+        [Test]
+        public void Read_Quasiquote2_Successful()
+        {
+            Check("`(a ~(+ 1 2) c)", "(quasiquote (a (unquote (+ 1 2)) c))");
+        }
+
+        [Test]
+        public void Read_Quasiquote3_Successful()
+        {
+            Check("`(a (list 1 2) c)", "(quasiquote (a (list 1 2) c))");
+        }
+
+        [Test]
+        public void Read_Quasiquote4_Successful()
+        {
+            Check("`(a ~(list 1 2) c)", "(quasiquote (a (unquote (list 1 2)) c))");
+        }
+
+        [Test]
+        public void Read_Quasiquote5_Successful()
+        {
+            Check("`(a ~@(list 1 2) c)", "(quasiquote (a (unquote-splicing (list 1 2)) c))");
+        }
+
+        [Test]
         public void Read_QuoteA_Successful()
         {
             Check("(quote a)");

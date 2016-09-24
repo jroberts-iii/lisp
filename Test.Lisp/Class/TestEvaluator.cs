@@ -142,6 +142,41 @@ namespace Test.Lisp.Class
         }
 
         [Test]
+        public void Evaluate_Quasiquote1_Successful()
+        {
+            var environment = new Environment();
+            Check("`(a (+ 1 2) c)", "(a (+ 1 2) c)", environment);
+        }
+
+        [Test]
+        public void Evaluate_Quasiquote2_Successful()
+        {
+            var environment = new Environment();
+            Check("`(a ~(+ 1 2) c)", "(a 3 c)", environment);
+        }
+
+        [Test]
+        public void Evaluate_Quasiquote3_Successful()
+        {
+            var environment = new Environment();
+            Check("`(a (list 1 2) c)", "(a (list 1 2) c)", environment);
+        }
+
+        [Test]
+        public void Evaluate_Quasiquote4_Successful()
+        {
+            var environment = new Environment();
+            Check("`(a ~(list 1 2) c)", "(a (1 2) c)", environment);
+        }
+
+        [Test]
+        public void Evaluate_Quasiquote5_Successful()
+        {
+            var environment = new Environment();
+            Check("`(a ~@(list 1 2) c)", "(a 1 2 c)", environment);
+        }
+
+        [Test]
         public void Evaluate_QuoteA_Successful()
         {
             var environment = new Environment();
