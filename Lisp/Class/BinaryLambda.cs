@@ -4,21 +4,18 @@ using Lisp.Interface;
 
 namespace Lisp.Class
 {
-    public class BinaryLambda : SExpression, ILambda
+    public class BinaryLambda : Lambda
     {
         private readonly string _name;
         private readonly Func<dynamic, dynamic, object> _opFunc;
 
-        public BinaryLambda(string name, Func<dynamic, dynamic, object> opFunc)
+        public BinaryLambda(string name, Func<dynamic, dynamic, object> opFunc) : base(null, "x", "y")
         {
             _name = name;
             _opFunc = opFunc;
         }
 
-        public IEnvironment ClosureEnvironment => null;
-        public string[] ParameterNames => new[] {"x", "y"};
-
-        public ISExpression Evaluate(IEnvironment environment, IList list)
+        public override ISExpression Evaluate(IEnvironment environment, IList list)
         {
             if (list.Rest.IsEmpty || !list.Rest.Rest.Rest.IsEmpty)
             {

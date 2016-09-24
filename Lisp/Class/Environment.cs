@@ -351,7 +351,9 @@ namespace Lisp.Class
                 {
                     if (sExpression.First == Constants.Unquote)
                     {
-                        return QuasiquoteListEvaluatorRest(environment, list.Rest).Prepend(Evaluate(environment, sExpression.Rest.First));
+                        return
+                            QuasiquoteListEvaluatorRest(environment, list.Rest)
+                                .Prepend(Evaluate(environment, sExpression.Rest.First));
                     }
 
                     if (sExpression.First == Constants.UnquoteSplicing)

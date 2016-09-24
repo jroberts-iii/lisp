@@ -2,7 +2,7 @@
 
 namespace Lisp.Class
 {
-    public class Value : SExpression, IValue
+    public class Value : Atom, IValue
     {
         public Value(object val)
         {

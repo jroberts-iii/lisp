@@ -35,9 +35,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\Atom.cs" />
     <Compile Include="Class\BinaryLambda.cs" />
+    <Compile Include="Class\Collection.cs" />
     <Compile Include="Class\Constants.cs" />
     <Compile Include="Class\Environment.cs" />
+    <Compile Include="Class\Map.cs" />
+    <Compile Include="Class\Identifier.cs" />
+    <Compile Include="Class\Pair.cs" />
     <Compile Include="Class\UnaryLambda.cs" />
     <Compile Include="Class\Keyword.cs" />
     <Compile Include="Class\Lambda.cs" />
@@ -50,13 +55,14 @@
     <Compile Include="Class\StringTextReader.cs" />
     <Compile Include="Class\Symbol.cs" />
     <Compile Include="Class\Value.cs" />
+    <Compile Include="Class\Vector.cs" />
     <Compile Include="Exception\LispException.cs" />
     <Compile Include="Interface\IAtom.cs" />
     <Compile Include="Interface\IEnvironment.cs" />
     <Compile Include="Interface\IKeyword.cs" />
     <Compile Include="Interface\IMacro.cs" />
     <Compile Include="Interface\IMap.cs" />
-    <Compile Include="Interface\IName.cs" />
+    <Compile Include="Interface\IIdentifier.cs" />
     <Compile Include="Interface\ILambda.cs" />
     <Compile Include="Interface\IPair.cs" />
     <Compile Include="Interface\ITextReader.cs" />
@@ -69,6 +75,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="InterfaceDiagram.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

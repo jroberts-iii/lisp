@@ -2,7 +2,7 @@
 
 namespace Lisp.Class
 {
-    public class Macro : SExpression, IMacro
+    public class Macro : Atom, IMacro
     {
         public Macro(ISExpression body, params string[] parameterNames)
         {

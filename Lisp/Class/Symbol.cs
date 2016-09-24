@@ -3,24 +3,15 @@ using Lisp.Interface;
 
 namespace Lisp.Class
 {
-    public class Symbol : SExpression, ISymbol
+    public class Symbol : Identifier, ISymbol
     {
-        public Symbol(string name) : this(name, string.Empty)
+        public Symbol(string name) : base(name, string.Empty)
         {
         }
 
-        public Symbol(string name, string ns)
+        public Symbol(string name, string @namespace) : base(name, @namespace)
         {
-            Name = name;
-            Namespace = ns;
         }
-
-        public string FullName => string.IsNullOrEmpty(Namespace)
-            ? Name
-            : $"{Namespace}.{Name}";
-
-        public string Name { get; }
-        public string Namespace { get; }
 
         public override ISExpression Evaluate(IEnvironment environment)
         {

@@ -5,7 +5,7 @@ using Lisp.Interface;
 
 namespace Lisp.Class
 {
-    public abstract class Lambda : SExpression, ILambda
+    public abstract class Lambda : Atom, ILambda
     {
         protected Lambda(IEnvironment closureEnvironment, params string[] parameterNames)
         {

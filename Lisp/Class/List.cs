@@ -8,7 +8,7 @@ using IList = Lisp.Interface.IList;
 
 namespace Lisp.Class
 {
-    public class List : SExpression, IList
+    public class List : Collection, IList
     {
         public static IList Empty = new List();
 

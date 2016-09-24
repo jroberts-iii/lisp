@@ -1,6 +1,6 @@
 ﻿namespace Lisp.Interface
 {
-    public interface IName : IAtom
+    public interface IIdentifier : IAtom
     {
         string FullName { get; }
         string Name { get; }
